@@ -1,22 +1,35 @@
 //@ts-ignore
 import Sendsay from 'sendsay-api';
 
-type LoginPayloadType = {
+export type LoginPayloadType = {
   login: string
   sublogin?: string
   password: string
 }
 
-export const logIn = (payload: LoginPayloadType) => {
-  debugger
-  const sendsay = new Sendsay({
-    auth: {
-      login: payload.login,
-      sublogin: payload.sublogin || "",
-      password: payload.password,
-    }
-  });
-  sendsay.login().then(function(response:any) {
-    console.log(response);
-  })
+export enum Status {
+  ERROR = "ERROR",
+  OK = 'OK',
+}
+
+export const logIn = async (payload: LoginPayloadType) => {
+  const sendsay = new Sendsay();
+  try {
+    const response = await sendsay.login(payload);
+    return {data: response.json(), status: Status.OK};
+  } catch (error) {
+
+    return {data: error, status: Status.ERROR};
+  }
+}
+
+const test = {
+  id: "error/auth/failed",
+  explain: "wrong_credentials",
+  request: {
+    action: "login",
+    login: "astaller96@gmail.com",
+    sublogin: "",
+    passwd: "ngo04Sepa"
+  }
 }

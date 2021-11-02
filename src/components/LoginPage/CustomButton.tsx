@@ -10,7 +10,7 @@ type ButtonType = {
 
 const CustomButton = ({onSubmit, isFetching, text}: ButtonType) => {
   return (
-    <Button type='submit' onClick={onSubmit}>
+    <Button disabled={isFetching} type='submit' onClick={onSubmit}>
       {!isFetching && text}
       {isFetching && <img src={loader} alt={'loader'} />}
     </Button>

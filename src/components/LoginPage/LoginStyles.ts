@@ -38,7 +38,7 @@ export const Wrapper = styled.div`
   height: 100vh;
 `;
 
-export const Form = styled.section`
+export const Form = styled.form`
   display: flex;
   width: 520px;
   flex-direction: column;
