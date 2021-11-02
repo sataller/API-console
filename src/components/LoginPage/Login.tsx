@@ -7,6 +7,7 @@ import ErrorBlock from './ErrorBlock';
 import CustomInput from './CustomInput';
 import CustomButton from './CustomButton';
 import Logo from '../reusibleComponents/Logo';
+import {logIn} from '../../api/api';
 
 const Login = () => {
   const [isFetching, setIsFetching] = useState<boolean>(false);
@@ -15,10 +16,17 @@ const Login = () => {
   const onSubmit = () => {
     setIsFetching(true);
 
-    setTimeout(() => {
-      setIsFetching(false);
-    }, 5000);
-    console.log('test');
+    // setTimeout(() => {
+    //   setIsFetching(false);
+    // }, 5000);
+    // console.log('test');
+    debugger
+
+    logIn({
+      login: "astaller96@gmail.com",
+      sublogin: "",
+      password: "ngo04Sepa",
+    });
   };
   const errorText = '{id: "error/auth/failed", explain: "wrong_credentials"}';
 
