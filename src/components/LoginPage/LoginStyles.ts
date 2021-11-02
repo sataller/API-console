@@ -51,7 +51,7 @@ export const Form = styled.section`
   }
 `;
 
-export const ErrorBlock = styled.div`
+export const Error = styled.div`
   max-width: 460px;
   height: 70px;
   background: rgba(207, 44, 0, 0.1);
