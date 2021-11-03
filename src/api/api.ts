@@ -1,5 +1,4 @@
-//@ts-ignore
-import Sendsay from 'sendsay-api';
+import {sendsay} from '../initSendsay';
 
 export type LoginPayloadType = {
   login: string
@@ -13,26 +12,22 @@ export enum Status {
 }
 
 export const logIn = async (payload: LoginPayloadType) => {
-  const sendsay = new Sendsay({
-    auth: {
-      ...payload
-    }
-  });
-
+  sendsay.auth = {...payload};
   try {
     await sendsay.login(payload);
-    console.log((sendsay));
     localStorage.setItem('token', sendsay.session);
+    const user = await sendsay.getUsername().split('/')[0];
+    sendsay.auth.sublogin = user;
+    localStorage.setItem('user', JSON.stringify({login:payload.login, sublogin:user}));
     return {data: sendsay.session, status: Status.OK};
   } catch (error) {
-    console.log(error);
     return {data: error, status: Status.ERROR};
   }
 };
 
-const logOut = () => {
-  console.log(sendsay);
-}
+export const logOut = () => {
+  localStorage.clear();
+};
 
 // Error response
 // const test = {

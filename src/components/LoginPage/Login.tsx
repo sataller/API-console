@@ -5,7 +5,9 @@ import ErrorBlock from './ErrorBlock';
 import CustomInput from './CustomInput';
 import CustomButton from './CustomButton';
 import Logo from '../reusibleComponents/Logo';
-import {logIn, LoginPayloadType, Status} from '../../api/api';
+import {logIn, LoginPayloadType, logOut, Status} from '../../api/api';
+import {validateLogin, validatePassword} from '../../utils/validation';
+import {useHistory} from 'react-router-dom';
 
 export type FormikValuesType = {
   login: string
@@ -20,8 +22,8 @@ type FormikErrorType = {
 
 const Login = () => {
   const [isFetching, setIsFetching] = useState<boolean>(false);
-  const [isError, setIsError] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const history = useHistory();
   const form = useFormik<FormikValuesType>({
     initialValues: {
       login: '',
@@ -30,21 +32,19 @@ const Login = () => {
     },
     validate: (values) => {
       const errors: FormikErrorType = {};
-      const loginError =  validateLogin(values.login);
-      const passwordError =  validatePassword(values.password);
+      const loginError = validateLogin(values.login);
+      const passwordError = validatePassword(values.password);
 
-      if (loginError){
-        errors.login = loginError
+      if (loginError) {
+        errors.login = loginError;
       }
-      if (loginError){
-        errors.password = passwordError
+      if (loginError) {
+        errors.password = passwordError;
 
       }
-      console.log(errors);
       return errors;
     },
     onSubmit: values => {
-      console.log(form);
       const payload = getPayload(values);
       onSubmit({...payload});
       // ngoo4Sepa  astaller96@gmail.com
@@ -52,38 +52,6 @@ const Login = () => {
 
   });
 
-  const validateLogin = (login: string) => {
-    let error ;
-
-    if (!login) {
-      error = 'Required';
-    }
-    return error;
-  };
-
-  const validatePassword = (password: string) => {
-    let error;
-
-    if (!/[A-Z]+/.test(password)) {
-      error = 'There must be one capital letter';
-    }
-    if (!/[0-9]+/.test(password)) {
-      error = 'there must be at least one digit';
-    }
-    if (!/[a-z]/.test(password)) {
-      error = 'There must be one lowercase letter';
-    }
-    if (/[а-я]/.test(password)) {
-      error = 'Can\'t use Cyrillic';
-    }
-    if (password.length < 8) {
-      error = 'Password must be longer than 8 сharacters';
-    }
-    if (!password) {
-      error = 'Required';
-    }
-    return error;
-  };
   const getPayload = (values: any) => {
     const payload: {[key: string]: string} = {};
     for (let key in values) {
@@ -96,15 +64,17 @@ const Login = () => {
   };
 
   const onSubmit = async (payload: LoginPayloadType) => {
-    debugger
     setError(null);
     setIsFetching(true);
     const response = await logIn(payload);
 
     if (response.status === Status.ERROR) {
       setError(`{id: ${response?.data?.id}, explain: ${response?.data?.explain}`);
+    } else{
+      console.log(history);
+      history.push(`/console`);
     }
-    console.log(response);
+
     setIsFetching(false);
   };
 
