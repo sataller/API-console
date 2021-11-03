@@ -46,6 +46,7 @@ export const Form = styled.form`
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   border-radius: 5px;
   padding: 40px 30px;
+  margin-top: 20px;
   @media (max-width: 550px) {
     width: 300px;
   }
@@ -121,5 +122,4 @@ export const Button = styled.button`
 export const LogoStyled = styled.img`
   width: 115px;
   height: 30px;
-  margin-bottom: 20px;
 `;

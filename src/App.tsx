@@ -14,18 +14,14 @@ import {
 const App = () => {
 
   const isAuth = () => {
-    // const { user: userRedux } = store.getState();
     let userLocal = localStorage.getItem('user');
     if (!userLocal) {
       return;
     }
-    userLocal = JSON.parse(userLocal);
+    // userLocal = JSON.parse(userLocal);
     if (!sendsay.session) {
       sendsay.setSession(localStorage.getItem('session'));
     }
-    // if (!userRedux.login) {
-    //   store.dispatch({ type: 'ON_LOGIN', payload: userLocal });
-    // }
     return true;
   };
 

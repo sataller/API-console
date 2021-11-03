@@ -18,7 +18,7 @@ export const logIn = async (payload: LoginPayloadType) => {
     localStorage.setItem('token', sendsay.session);
     const user = await sendsay.getUsername().split('/')[0];
     sendsay.auth.sublogin = user;
-    localStorage.setItem('user', JSON.stringify({login:payload.login, sublogin:user}));
+  localStorage.setItem('user', JSON.stringify({login:payload.login, sublogin:payload.sublogin || ""}));
     return {data: sendsay.session, status: Status.OK};
   } catch (error) {
     return {data: error, status: Status.ERROR};
