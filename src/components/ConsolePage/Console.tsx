@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import ConsoleHeader from './ConsoleHeader';
 import {exitFullScreen, requestFullScreen} from '../../utils/reuquestFullScreen';
+import TabsBlock from './TabsBlock';
 
 const Console = () => {
   const fullScreeRef = React.useRef<HTMLDivElement>(null);
@@ -19,8 +20,7 @@ const Console = () => {
   return (
     <Wrapper ref={fullScreeRef}>
       <ConsoleHeader setIsFullScreen={setIsFullScreen} isFullScreen={isFullScreen}/>
-      {/*Console*/}
-      {/*<button onClick={onLogoutClick}>jagsfjhghjdgf</button>*/}
+      <TabsBlock/>
     </Wrapper>
   );
 };
