@@ -2,10 +2,12 @@ import React from 'react';
 import styled from 'styled-components';
 import IndicatorIcon from './IndicatorIcon';
 import optionsIcon from '../../assets/icons/dots.svg';
+import SubMenu from './SubMenu';
 
 const Tab = () => {
   const [isVisibleSubMenu, setIsVisibleSubMenu] = React.useState(false);
   const [isVisibleToast, setIsVisibleToast] = React.useState(false);
+
   const copy = () => {
     setIsVisibleToast(true);
     setIsVisibleSubMenu(false);
@@ -18,13 +20,24 @@ const Tab = () => {
     setIsVisibleSubMenu(!isVisibleSubMenu);
   };
 
+  const closeSubMenu = () =>{
+    if(isVisibleSubMenu){
+      setIsVisibleSubMenu(false);
+    }
+  }
+
   const deleteTab = () => {
     console.log('delete');
-    setIsVisibleSubMenu(!isVisibleSubMenu);
+    setIsVisibleSubMenu(false);
+  };
+
+  const perform = () => {
+    setIsVisibleSubMenu(false);
+    console.log("perform");
   }
 
   return (
-    <TabBlock>
+    <TabBlock onMouseLeave={closeSubMenu}>
       <TabWrapper>
         <IndicatorIcon />
         {isVisibleToast && <Toast>Скопировано</Toast>}
@@ -34,12 +47,7 @@ const Tab = () => {
         <img src={optionsIcon} onClick={viewSubMenu} />
       </TabWrapper>
       {isVisibleSubMenu
-      && <SubMenu>
-        <SubMenuOption normal>Выполнить</SubMenuOption>
-        <SubMenuOption normal onClick={copy}>Скопировать</SubMenuOption>
-        <SubMenuOptionHr></SubMenuOptionHr>
-        <SubMenuOption onClick={deleteTab}>Удалить</SubMenuOption>
-      </SubMenu>}
+      && <SubMenu perform={perform} deleteTab={deleteTab} copy={copy}/>}
     </TabBlock>
   );
 };
@@ -48,35 +56,6 @@ export default Tab;
 
 const TabBlock = styled.div`
   position: relative;
-`;
-
-const SubMenuOptionHr = styled.hr`
-  width: 100%;
-  background: #FFFFFF;
-  border: 1px solid rgba(0, 0, 0, 0.2);
-`;
-
-const SubMenuOption = styled.div<{normal?: boolean}>`
-  width: 100%;
-  height: 45px;
-  padding: 10px 15px;
-  //border-top: 1px solid black;
-  &:hover {
-    background-color: ${props => props.normal ? '#0055FB' : '#CF2C00'};
-  }
-`;
-
-const SubMenu = styled.div`
-  display: flex;
-  flex-direction: column;
-  padding: 5px 0;
-
-  position: absolute;
-  width: 133px;
-
-  background: #FFFFFF;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
-  border-radius: 3px;
 `;
 
 const Toast = styled.div`
