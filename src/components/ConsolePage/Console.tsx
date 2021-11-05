@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import ConsoleHeader from './ConsoleHeader';
-import {exitFullScreen, requestFullScreen} from '../../utils/reuquestFullScreen';
+import {FullScreen, useFullScreenHandle} from 'react-full-screen';
 import TabsBlock from './TabsBlock';
 import ConsoleFooter from './ConsoleFooter';
 import ConsoleFields from './ConsoleFields';
@@ -11,32 +11,43 @@ const Console = () => {
   const [isFullScreen, setIsFullScreen] = React.useState<boolean>(false);
   const [screenHeight, setScreenHeight] = React.useState(0);
 
+  const handle = useFullScreenHandle();
+
+  const switchFullScreen = () => {
+    if (handle.active) {
+      handle.exit();
+      setIsFullScreen(false);
+    } else {
+      handle.enter();
+      setIsFullScreen(true);
+    }
+  };
   React.useEffect(() => {
-    setScreenHeight(window.innerHeight);
-    // if (fullScreeRef.current && isFullScreen) {
-    //   requestFullScreen(fullScreeRef.current)?.then(data => console.log(data)).catch(error=>console.log(error))
-    // }
-    // if(!isFullScreen){
-    //   exitFullScreen();
-    // }
-  }, [isFullScreen]);
+    if (handle.active) {
+      setScreenHeight(window.screen.height);
+
+    } else {
+      setScreenHeight(window.innerHeight);
+    }
+  }, [handle.active]);
 
   return (
-    <Wrapper height={screenHeight} ref={fullScreeRef}>
-      <ConsoleHeader setIsFullScreen={setIsFullScreen} isFullScreen={isFullScreen}/>
-      <TabsBlock/>
-      <ConsoleFields height={screenHeight-170}/>
-      <ConsoleFooter/>
-    </Wrapper>
+    <FullScreen handle={handle}>
+      <Wrapper height={screenHeight} ref={fullScreeRef}>
+        <ConsoleHeader setIsFullScreen={switchFullScreen} isFullScreen={isFullScreen} />
+        <TabsBlock />
+        <ConsoleFields height={screenHeight - 170} />
+        <ConsoleFooter />
+      </Wrapper>
+    </FullScreen>
   );
 };
 
 export default Console;
 
-const Wrapper = styled.div<{height:number}>`
+const Wrapper = styled.div<{height: number}>`
   max-width: 100%;
   min-height: ${props => props.height}px;
-  //background: #693535;
   background: #FFFFFF;
   margin: 0;
   padding: 0;
