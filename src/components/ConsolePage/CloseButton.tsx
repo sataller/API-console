@@ -5,9 +5,8 @@ import closeIcon from '../../assets/icons/cross.svg';
 const CloseButton = () => {
   return (
     <Wrapper>
-      <Gradient/>
       <Button>
-        <img src={closeIcon} alt={'close button'}/>
+        <img src={closeIcon} alt={'close button'} />
       </Button>
     </Wrapper>
   );
@@ -30,15 +29,10 @@ const Button = styled.div`
   height: 100%;
   border-left: 1px solid #C4C4C4;;
   background: #F6F6F6;
-  & img{
+  -webkit-box-shadow: -4px 0 5px 0 rgba(165, 165, 165, 0.96);
+  -moz-box-shadow: -4px 0 5px 0 rgba(165, 165, 165, 0.96);
+  box-shadow: -4px 0 5px 0 rgba(165, 165, 165, 0.96);
+  & img {
     max-width: 18px;
   }
 `;
-
-const Gradient = styled.div`
-  width: 15px;
-  height: 100%;
-  pointer-events: none;
-  background: linear-gradient(269.93deg, #F6F6F6 0.06%, rgba(246, 246, 246, 0) 99.93%);
-`;
-

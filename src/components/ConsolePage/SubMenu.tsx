@@ -12,7 +12,7 @@ const SubMenu = ({copy, deleteTab, perform}:SubMenuPropsType) => {
     <SubMenuWrapper>
       <SubMenuOption normal onClick={perform}>Выполнить</SubMenuOption>
       <SubMenuOption normal onClick={copy}>Скопировать</SubMenuOption>
-      <SubMenuOptionHr></SubMenuOptionHr>
+      <SubMenuOptionHr/>
       <SubMenuOption onClick={deleteTab}>Удалить</SubMenuOption>
     </SubMenuWrapper>
   );
@@ -38,6 +38,7 @@ const SubMenuOption = styled.div<{normal?: boolean}>`
 
 const SubMenuWrapper = styled.div`
   display: flex;
+  z-index: 2;
   flex-direction: column;
   padding: 5px 0;
   cursor: pointer;

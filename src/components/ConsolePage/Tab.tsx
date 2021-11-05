@@ -9,6 +9,15 @@ const Tab = () => {
   const [isVisibleToast, setIsVisibleToast] = React.useState(false);
 
   const copy = () => {
+
+    navigator.clipboard.writeText('Hello Alligator! yra')
+      .then(() => {
+        console.log('copied');
+      })
+      .catch(err => {
+        console.log('Something went wrong', err);
+      });
+
     setIsVisibleToast(true);
     setIsVisibleSubMenu(false);
     setTimeout(() => {
@@ -20,11 +29,11 @@ const Tab = () => {
     setIsVisibleSubMenu(!isVisibleSubMenu);
   };
 
-  const closeSubMenu = () =>{
-    if(isVisibleSubMenu){
+  const closeSubMenu = () => {
+    if (isVisibleSubMenu) {
       setIsVisibleSubMenu(false);
     }
-  }
+  };
 
   const deleteTab = () => {
     console.log('delete');
@@ -33,8 +42,8 @@ const Tab = () => {
 
   const perform = () => {
     setIsVisibleSubMenu(false);
-    console.log("perform");
-  }
+    console.log('perform');
+  };
 
   return (
     <TabBlock onMouseLeave={closeSubMenu}>
@@ -47,7 +56,7 @@ const Tab = () => {
         <OptionsIcon src={optionsIcon} onClick={viewSubMenu} />
       </TabWrapper>
       {isVisibleSubMenu
-      && <SubMenu perform={perform} deleteTab={deleteTab} copy={copy}/>}
+      && <SubMenu perform={perform} deleteTab={deleteTab} copy={copy} />}
     </TabBlock>
   );
 };
@@ -59,7 +68,7 @@ const TabBlock = styled.div`
 `;
 
 const OptionsIcon = styled.img`
-cursor: pointer;
+  cursor: pointer;
 `;
 
 const Toast = styled.div`
