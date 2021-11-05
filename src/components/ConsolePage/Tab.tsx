@@ -44,7 +44,7 @@ const Tab = () => {
         <Title>
           track.get
         </Title>
-        <img src={optionsIcon} onClick={viewSubMenu} />
+        <OptionsIcon src={optionsIcon} onClick={viewSubMenu} />
       </TabWrapper>
       {isVisibleSubMenu
       && <SubMenu perform={perform} deleteTab={deleteTab} copy={copy}/>}
@@ -56,6 +56,10 @@ export default Tab;
 
 const TabBlock = styled.div`
   position: relative;
+`;
+
+const OptionsIcon = styled.img`
+cursor: pointer;
 `;
 
 const Toast = styled.div`

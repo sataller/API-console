@@ -3,7 +3,7 @@ import {Form, Title, Wrapper} from './LoginStyles';
 import {useFormik} from 'formik';
 import ErrorBlock from './ErrorBlock';
 import CustomInput from './CustomInput';
-import CustomButton from './CustomButton';
+import CustomButton from '../reusibleComponents/CustomButton';
 import Logo from '../reusibleComponents/Logo';
 import {logIn, LoginPayloadType, logOut, Status} from '../../api/api';
 import {validateLogin, validatePassword} from '../../utils/validation';
@@ -94,7 +94,7 @@ const Login = () => {
         <CustomInput key={'password'} error={(form.touched.password && form.errors.password) || ''} id={'password'}
                      placeholder='Password' onChange={form.handleChange}
                      value={form.values.password} type={'password'} />
-        <CustomButton onSubmit={form.handleSubmit} isFetching={isFetching} text={'Send'} />
+        <CustomButton margin={20} onSubmit={form.handleSubmit} isFetching={isFetching} text={'Send'} />
       </Form>
     </Wrapper>
   );

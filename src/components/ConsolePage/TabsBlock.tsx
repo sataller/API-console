@@ -6,7 +6,7 @@ import Tabs from './Tabs';
 const TabsBlock = () => {
   return (
     <Wrapper>
-     <Tabs/>
+        <Tabs/>
       <CloseButton />
     </Wrapper>
   );
@@ -25,3 +25,5 @@ const Wrapper = styled.div`
   border-top: 1px solid rgba(0, 0, 0, 0.2);
   border-bottom: 1px solid rgba(0, 0, 0, 0.2);
 `;
+
+

@@ -3,10 +3,10 @@ import styled from 'styled-components';
 import {ConsoleHeaderPropsType} from '../ConsolePage/ConsoleHeader';
 
 
-export const FullScreenButton = ({setIsFullScreen, isFullScreen}:ConsoleHeaderPropsType) => {
+export const FullScreenButton = ({setIsFullScreen, isFullScreen}: ConsoleHeaderPropsType) => {
   return (
     <FullScreenButtonWrapper onClick={() => {
-      setIsFullScreen(!isFullScreen)
+      setIsFullScreen(!isFullScreen);
     }}>
       <StyledSvg width='18' height='18' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'>
         <g id='full-screen' stroke='#0D0D0D'>
@@ -28,8 +28,7 @@ export const FullScreenButton = ({setIsFullScreen, isFullScreen}:ConsoleHeaderPr
 };
 
 const StyledSvg = styled.svg`
-
-
+  
   &:hover {
     cursor: pointer
   }
@@ -42,7 +41,7 @@ const StyledSvg = styled.svg`
 
 const FullScreenButtonWrapper = styled.button`
   z-index: 1;
-  margin: 0 30px;
+  margin-left: 30px;
   padding: 7px;
   cursor: pointer;
   border: none;
