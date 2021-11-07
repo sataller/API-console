@@ -40,7 +40,6 @@ const Login = () => {
       }
       if (loginError) {
         errors.password = passwordError;
-
       }
       return errors;
     },
