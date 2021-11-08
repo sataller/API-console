@@ -1,14 +1,21 @@
 import React from 'react';
 import styled from 'styled-components';
-import {Button} from '../reusibleComponents/CustomButton';
+import CustomButton from '../reusibleComponents/CustomButton';
 import FormatButton from './FormatButton';
 
-const ConsoleFooter = () => {
+type FooterPropsType = {
+  formatJson: () => void;
+  sendRequest: () => void;
+  error: boolean;
+  isFetching: boolean;
+};
+
+const ConsoleFooter = ({formatJson, sendRequest, error, isFetching}: FooterPropsType) => {
   return (
     <Wrapper>
-      <Button>Send</Button>
+      <CustomButton isFetching={isFetching} text={'Send'} isError={error} onSubmit={sendRequest} />
       <LinkToGit>@link-to-your-github</LinkToGit>
-      <FormatButton/>
+      <FormatButton onClick={formatJson} />
     </Wrapper>
   );
 };
@@ -21,7 +28,7 @@ const Wrapper = styled.div`
   justify-content: space-between;
   width: 100%;
   height: 70px;
-  background: #FFFFFF;
+  background: #ffffff;
   margin: 0;
   padding: 15px;
   border-top: 1px solid rgba(0, 0, 0, 0.2);
@@ -48,5 +55,3 @@ const LinkToGit = styled.div`
     color: orange;
   }
 `;
-
-

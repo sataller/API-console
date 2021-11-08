@@ -27,11 +27,12 @@ const Button = styled.div`
   justify-content: center;
   width: 50px;
   height: 100%;
-  border-left: 1px solid #C4C4C4;;
-  background: #F6F6F6;
-  -webkit-box-shadow: -4px 0 5px 0 rgba(165, 165, 165, 0.96);
-  -moz-box-shadow: -4px 0 5px 0 rgba(165, 165, 165, 0.96);
-  box-shadow: -4px 0 5px 0 rgba(165, 165, 165, 0.96);
+  border-left: 1px solid #c4c4c4;
+  background: #f6f6f6;
+  -webkit-box-shadow: -30px 0 24px -2px rgba(255, 255, 255, 0.9);
+  -moz-box-shadow: -30px 0 24px -2px rgba(255, 255, 255, 0.9);
+  box-shadow: -30px 0 24px -2px rgba(255, 255, 255, 0.9);
+
   & img {
     max-width: 18px;
   }

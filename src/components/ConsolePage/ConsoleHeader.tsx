@@ -7,12 +7,11 @@ import {useHistory} from 'react-router-dom';
 import {logOut} from '../../api/api';
 
 export type ConsoleHeaderPropsType = {
-  setIsFullScreen:Dispatch<SetStateAction<boolean>>
-  isFullScreen:boolean
-}
+  setIsFullScreen: Dispatch<SetStateAction<boolean>>;
+  isFullScreen: boolean;
+};
 
-const ConsoleHeader = ({setIsFullScreen, isFullScreen}:ConsoleHeaderPropsType) => {
-
+const ConsoleHeader = ({setIsFullScreen, isFullScreen}: ConsoleHeaderPropsType) => {
   const [value, setValue] = useState('iamyourlogin@domain.xyz : Sublogin');
   const history = useHistory();
   const onLogoutClick = () => {
@@ -30,9 +29,9 @@ const ConsoleHeader = ({setIsFullScreen, isFullScreen}:ConsoleHeaderPropsType) =
         <Title>API-консолька</Title>
       </HeaderItem>
       <HeaderItem>
-        <UserInfo onChange={handleChange} value={value} />
+        <UserInfo onChange={handleChange} value={value} disabled />
         <LogoutButton onLogoutClick={onLogoutClick} />
-        <FullScreenButton setIsFullScreen={setIsFullScreen} isFullScreen={isFullScreen}/>
+        <FullScreenButton setIsFullScreen={setIsFullScreen} isFullScreen={isFullScreen} />
       </HeaderItem>
     </Header>
   );
@@ -47,7 +46,7 @@ const Header = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: #F6F6F6;
+  background: #f6f6f6;
 `;
 
 const HeaderItem = styled.div`
@@ -56,7 +55,6 @@ const HeaderItem = styled.div`
 `;
 
 const Title = styled.h1`
-
   font-family: SF Pro Text;
   font-style: normal;
   font-weight: normal;
@@ -64,7 +62,7 @@ const Title = styled.h1`
   line-height: 30px;
 
   margin-left: 20px;
-  color: #0D0D0D;
+  color: #0d0d0d;
 `;
 
 const UserInfo = styled.input`
@@ -72,8 +70,8 @@ const UserInfo = styled.input`
   max-width: 280px;
   height: 40px;
   padding: 6px 10px;
-
-  background: #FFFFFF;
+  cursor: pointer;
+  background: #ffffff;
 
   border: 1px solid rgba(0, 0, 0, 0.2);
   border-radius: 5px;

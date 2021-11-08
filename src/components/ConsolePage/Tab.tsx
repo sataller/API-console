@@ -9,12 +9,12 @@ const Tab = () => {
   const [isVisibleToast, setIsVisibleToast] = React.useState(false);
 
   const copy = () => {
-
-    navigator.clipboard.writeText('Hello Alligator! yra')
+    navigator.clipboard
+      .writeText('Hello Alligator! yra')
       .then(() => {
         console.log('copied');
       })
-      .catch(err => {
+      .catch((err) => {
         console.log('Something went wrong', err);
       });
 
@@ -50,13 +50,10 @@ const Tab = () => {
       <TabWrapper>
         <IndicatorIcon />
         {isVisibleToast && <Toast>Скопировано</Toast>}
-        <Title>
-          track.get
-        </Title>
+        <Title>track.get</Title>
         <OptionsIcon src={optionsIcon} onClick={viewSubMenu} />
       </TabWrapper>
-      {isVisibleSubMenu
-      && <SubMenu perform={perform} deleteTab={deleteTab} copy={copy} />}
+      {isVisibleSubMenu && <SubMenu perform={perform} deleteTab={deleteTab} copy={copy} />}
     </TabBlock>
   );
 };
@@ -75,7 +72,7 @@ const Toast = styled.div`
   position: absolute;
   width: 90px;
   height: 20px;
-  background: #F6F6F6;
+  background: #f6f6f6;
   border-radius: 5px;
   font-family: SF Pro Text;
   font-style: normal;
@@ -84,7 +81,7 @@ const Toast = styled.div`
   line-height: 20px;
   padding: 0 10px;
 
-  color: #0D0D0D;
+  color: #0d0d0d;
   animation: det 1s linear;
   animation-delay: 2s;
 
@@ -109,7 +106,7 @@ const TabWrapper = styled.div`
   padding: 5px 10px;
   width: 120px;
   height: 30px;
-  background: #FFFFFF;
+  background: #ffffff;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
   border-radius: 5px;
   margin: 0 10px;
@@ -126,5 +123,5 @@ const Title = styled.h2`
   margin-right: 10px;
   display: flex;
   align-items: center;
-  color: #0D0D0D;
+  color: #0d0d0d;
 `;
