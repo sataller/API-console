@@ -4,7 +4,6 @@ export const deleteUserAction = (id: string) => {
     const actions = JSON.parse(userActions);
     const key = `${id}`;
     delete actions.dataList[key];
-    console.log(actions);
     localStorage.setItem('userActions', JSON.stringify(actions));
   }
 };
