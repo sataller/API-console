@@ -7,14 +7,14 @@ import {useResize} from '../../utils/useResize';
 
 const ConsoleFields = ({
   fieldHeight,
-  value,
+  requestText,
   onChangeValue,
   requestError,
   responseError,
   responseText,
 }: {
   fieldHeight: number;
-  value: string;
+  requestText: string;
   responseText: string;
   requestError: boolean;
   responseError: boolean;
@@ -30,7 +30,7 @@ const ConsoleFields = ({
     <Wrapper height={fieldHeight}>
       <FieldWrapper ref={leftField}>
         <Title error={requestError}>Request:</Title>
-        <RequestField value={value} onchange={onChangeText} error={requestError} />
+        <RequestField value={requestText} onchange={onChangeText} error={requestError} />
       </FieldWrapper>
       <div style={{display: 'flex'}} ref={resizeDots}>
         <ResizeIcon src={dotsIcon} />

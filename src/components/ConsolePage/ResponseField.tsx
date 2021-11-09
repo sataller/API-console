@@ -25,4 +25,7 @@ const ResponseFieldWrapper = styled.div<{width?: number; error?: boolean}>`
   padding: 10px;
   ${(props) => props.error && 'box-shadow: 0px 0px 5px rgba(207, 44, 0, 0.5);'};
   overflow: auto;
+  & div > pre {
+    margin: 0;
+  }
 `;

@@ -22,7 +22,7 @@ const App = () => {
       <BrowserRouter>
         <Switch>
           <Route exact path="/" component={Login} />
-          <Route exact path="/login" component={Login} />
+          <Route exact path="/login" render={() => (!isAuth() ? <Login /> : <Redirect to="/console" />)} />
           <Route exact path="/console" render={() => (isAuth() ? <Console /> : <Redirect to="/login" />)} />
         </Switch>
       </BrowserRouter>

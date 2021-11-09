@@ -3,21 +3,26 @@ import styled from 'styled-components';
 import IndicatorIcon from './IndicatorIcon';
 import optionsIcon from '../../assets/icons/dots.svg';
 import SubMenu from './SubMenu';
+import {copyResponse} from '../../utils/copyResponse';
+import {deleteUserAction} from '../../utils/deleteUserAction';
 
-const Tab = () => {
+type TabPropsType = {
+  id: string;
+  isError: boolean;
+  title: string;
+  responseText: any;
+  requestText: any;
+  setViewText: (requestText: string, responseText: string) => void;
+  sendRequest: () => Promise<void>;
+};
+
+const Tab = ({sendRequest, responseText, requestText, id, isError, title, setViewText}: TabPropsType) => {
   const [isVisibleSubMenu, setIsVisibleSubMenu] = React.useState(false);
   const [isVisibleToast, setIsVisibleToast] = React.useState(false);
+  const [toastText, setToastText] = React.useState('Скопировано');
 
-  const copy = () => {
-    navigator.clipboard
-      .writeText('Hello Alligator! yra')
-      .then(() => {
-        console.log('copied');
-      })
-      .catch((err) => {
-        console.log('Something went wrong', err);
-      });
-
+  const viewToast = (text: string) => {
+    setToastText(text);
     setIsVisibleToast(true);
     setIsVisibleSubMenu(false);
     setTimeout(() => {
@@ -36,24 +41,30 @@ const Tab = () => {
   };
 
   const deleteTab = () => {
-    console.log('delete');
+    deleteUserAction(id);
     setIsVisibleSubMenu(false);
   };
 
-  const perform = () => {
+  const perform = async () => {
+    openTab();
+    await sendRequest();
     setIsVisibleSubMenu(false);
     console.log('perform');
   };
 
+  const openTab = () => {
+    setViewText(JSON.stringify(requestText), responseText);
+  };
+
   return (
-    <TabBlock onMouseLeave={closeSubMenu}>
+    <TabBlock onClick={openTab} onMouseLeave={closeSubMenu}>
       <TabWrapper>
-        <IndicatorIcon />
-        {isVisibleToast && <Toast>Скопировано</Toast>}
-        <Title>track.get</Title>
+        <IndicatorIcon isError={isError} />
+        {isVisibleToast && <Toast>{toastText}</Toast>}
+        <Title>{title || 'no action'}</Title>
         <OptionsIcon src={optionsIcon} onClick={viewSubMenu} />
       </TabWrapper>
-      {isVisibleSubMenu && <SubMenu perform={perform} deleteTab={deleteTab} copy={copy} />}
+      {isVisibleSubMenu && <SubMenu perform={perform} deleteTab={deleteTab} copy={() => copyResponse({id, viewToast})} />}
     </TabBlock>
   );
 };
@@ -62,6 +73,7 @@ export default Tab;
 
 const TabBlock = styled.div`
   position: relative;
+  cursor: pointer;
 `;
 
 const OptionsIcon = styled.img`

@@ -78,15 +78,20 @@ const Console = () => {
     setRequestText(text);
   };
 
+  const setViewText = (requestText: string, responseText: string) => {
+    setRequestText(requestText);
+    setResponseText(responseText);
+  };
+
   return (
     <FullScreen handle={handle}>
       <Wrapper height={screenHeight} ref={fullScreeRef}>
         <ConsoleHeader setIsFullScreen={switchFullScreen} isFullScreen={isFullScreen} />
-        <TabsBlock />
+        <TabsBlock setViewText={setViewText} sendRequest={sendRequest} />
         <ConsoleFields
           requestError={requestError}
           responseError={responseError}
-          value={requestText}
+          requestText={requestText}
           responseText={responseText}
           onChangeValue={onChangeRequestText}
           fieldHeight={screenHeight - 170}
