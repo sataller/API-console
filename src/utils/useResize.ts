@@ -2,21 +2,27 @@ import React from 'react';
 
 export const useResize = () => {
   const resizeDots = React.useRef<HTMLImageElement>(null);
-  const rightField = React.useRef<HTMLImageElement>(null);
-  const leftField = React.useRef<HTMLImageElement>(null);
+  const rightField = React.useRef<HTMLDivElement>(null);
+  const leftField = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
     const resizeElement = resizeDots.current;
     const rightFieldE = rightField.current;
     const leftFieldE = leftField.current;
+    if (!rightFieldE || !leftFieldE || !resizeElement) {
+      return;
+    }
     let mouseDown = false;
+    let rightWidth = localStorage.getItem('rightFieldWidth');
+    let leftWidth = localStorage.getItem('leftFieldWidth');
+    if (rightWidth && leftWidth) {
+      rightFieldE.style.width = rightWidth;
+      leftFieldE.style.width = leftWidth;
+    }
     let startPosition = resizeElement?.offsetLeft || 0;
     let leftStartPosition = leftFieldE?.offsetWidth || 0;
     let rightStartPosition = rightFieldE?.offsetWidth || 0;
 
-    if (!rightFieldE || !leftFieldE || !resizeElement) {
-      return;
-    }
     resizeElement.addEventListener('mouseup', (e) => {
       e.stopPropagation();
       e.preventDefault();
@@ -30,14 +36,9 @@ export const useResize = () => {
     });
 
     document.addEventListener('mousemove', (moveEvent) => {
-      moveEvent.stopPropagation();
-      moveEvent.preventDefault();
-
-      if (mouseDown) {
-        rightFieldE.style.width = `${rightStartPosition + (startPosition - moveEvent.clientX)}px`;
-        leftFieldE.style.width = `${leftStartPosition - (startPosition - moveEvent.clientX)}px`;
-      }
+      mouseMoveListener(moveEvent, rightFieldE, leftFieldE, rightStartPosition, leftStartPosition, startPosition, mouseDown);
     });
+
     return () => {
       resizeElement.removeEventListener('mouseup', (e) => {
         e.stopPropagation();
@@ -52,13 +53,7 @@ export const useResize = () => {
       });
 
       document.removeEventListener('mousemove', (moveEvent) => {
-        moveEvent.stopPropagation();
-        moveEvent.preventDefault();
-
-        if (mouseDown) {
-          rightFieldE.style.width = `${rightStartPosition + (startPosition - moveEvent.clientX)}px`;
-          leftFieldE.style.width = `${leftStartPosition - (startPosition - moveEvent.clientX)}px`;
-        }
+        mouseMoveListener(moveEvent, rightFieldE, leftFieldE, rightStartPosition, leftStartPosition, startPosition, mouseDown);
       });
     };
   }, []);
@@ -68,4 +63,24 @@ export const useResize = () => {
     rightField,
     leftField,
   };
+};
+
+const mouseMoveListener = (
+  moveEvent: MouseEvent,
+  rightFieldE: HTMLDivElement,
+  leftFieldE: HTMLDivElement,
+  rightStartPosition: number,
+  leftStartPosition: number,
+  startPosition: number,
+  mouseDown: boolean
+) => {
+  moveEvent.stopPropagation();
+  moveEvent.preventDefault();
+
+  if (mouseDown) {
+    rightFieldE.style.width = `${rightStartPosition + (startPosition - moveEvent.clientX)}px`;
+    leftFieldE.style.width = `${leftStartPosition - (startPosition - moveEvent.clientX)}px`;
+    localStorage.setItem('leftFieldWidth', leftFieldE.style.width);
+    localStorage.setItem('rightFieldWidth', rightFieldE.style.width);
+  }
 };
