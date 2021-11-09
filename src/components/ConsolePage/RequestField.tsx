@@ -2,19 +2,17 @@ import React, {ChangeEvent} from 'react';
 import styled from 'styled-components';
 
 type RequestFieldPropsType = {
-  width: number;
   children?: React.ReactNode;
   error?: boolean;
   onchange: (e: ChangeEvent<HTMLTextAreaElement>) => void;
   value: string;
 };
 
-const RequestField = ({width, children, error, onchange, value}: RequestFieldPropsType) => {
-  // const fieldRef = React.useRef<HTMLDivElement>(null);
+const RequestField = ({children, error, onchange, value}: RequestFieldPropsType) => {
   const fieldRef = React.useRef<HTMLTextAreaElement>(null);
 
   return (
-    <Wrapper onChange={(e) => onchange(e)} ref={fieldRef} width={width} error={error} value={value}>
+    <Wrapper onChange={(e) => onchange(e)} ref={fieldRef} error={error} value={value}>
       {children}
     </Wrapper>
   );
@@ -22,10 +20,10 @@ const RequestField = ({width, children, error, onchange, value}: RequestFieldPro
 
 export default RequestField;
 
-const Wrapper = styled.textarea<{width: number; error?: boolean}>`
-  width: ${(props) => props.width}px;
-  resize: none;
+const Wrapper = styled.textarea<{width?: number; error?: boolean}>`
+  width: 100%;
   min-width: 400px;
+  resize: none;
   min-height: 95%;
   background: #ffffff;
   border: 1px solid ${(props) => (props.error ? '#CF2C00' : 'rgba(0, 0, 0, 0.2)')};
