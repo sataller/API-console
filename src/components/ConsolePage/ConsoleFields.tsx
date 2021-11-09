@@ -5,27 +5,21 @@ import RequestField from './RequestField';
 import ResponseField from './ResponseField';
 import {useResize} from '../../utils/useResize';
 
-const json = {
-  array: [1, 2, 3],
-  boolean: true,
-  null: null,
-  number: 'four',
-  object: {a: 'b', c: 'd'},
-  string: 'Hello World',
-};
-
 const ConsoleFields = ({
   fieldHeight,
   value,
   onChangeValue,
   requestError,
+  responseError,
+  responseText,
 }: {
   fieldHeight: number;
   value: string;
+  responseText: string;
   requestError: boolean;
+  responseError: boolean;
   onChangeValue: (text: string) => void;
 }) => {
-  const [responseError, setResponseError] = React.useState<boolean>(false);
   const {resizeDots, rightField, leftField} = useResize();
 
   const onChangeText = (e: ChangeEvent<HTMLTextAreaElement>) => {
@@ -43,7 +37,7 @@ const ConsoleFields = ({
       </div>
       <FieldWrapper ref={rightField}>
         <Title error={responseError}>Response:</Title>
-        <ResponseField json={json} error={responseError} />
+        <ResponseField json={responseText} error={responseError} />
       </FieldWrapper>
     </Wrapper>
   );
@@ -55,7 +49,6 @@ const FieldWrapper = styled.div`
   flex-grow: 0.5;
   min-width: 400px;
   align-items: stretch;
-  overflow: auto;
 `;
 
 const Title = styled.h3<{error: boolean}>`

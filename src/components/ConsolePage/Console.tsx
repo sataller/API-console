@@ -1,10 +1,12 @@
-import React, {ChangeEvent} from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import ConsoleHeader from './ConsoleHeader';
 import {FullScreen, useFullScreenHandle} from 'react-full-screen';
 import TabsBlock from './TabsBlock';
 import ConsoleFooter from './ConsoleFooter';
 import ConsoleFields from './ConsoleFields';
+import * as api from '../../api/api';
+import {Status} from '../../api/api';
 
 const json = `{"array": [1,2,3],"boolean":true,"null": null,"number":"four","object":{"a":"b","c": "d"},"string":"HelloWorld"}`;
 
@@ -13,7 +15,9 @@ const Console = () => {
   const [isFullScreen, setIsFullScreen] = React.useState<boolean>(false);
   const [screenHeight, setScreenHeight] = React.useState(0);
   const [requestError, setRequestError] = React.useState<boolean>(false);
+  const [responseError, setResponseError] = React.useState<boolean>(false);
   const [requestText, setRequestText] = React.useState<string>(json);
+  const [responseText, setResponseText] = React.useState<string>('');
   const [isFetching, setIsFetching] = React.useState<boolean>(false);
   const handle = useFullScreenHandle();
 
@@ -41,9 +45,9 @@ const Console = () => {
       setRequestText(JSON.stringify(string, null, 2));
     } catch (error) {
       setRequestError(true);
-      console.log(error);
     }
   };
+
   const validateJson = () => {
     try {
       JSON.parse(requestText.replace(/\s+/g, ''));
@@ -53,13 +57,20 @@ const Console = () => {
     }
   };
 
-  const sendRequest = () => {
+  const sendRequest = async () => {
+    setResponseError(false);
     const isValid = validateJson();
     if (!isValid) {
       setRequestError(true);
+      return;
     }
     setIsFetching(true);
-    setTimeout(() => setIsFetching(false), 3000);
+    const response = await api.request(JSON.parse(requestText));
+    if (response.status === Status.ERROR) {
+      setResponseError(true);
+    }
+    setResponseText(response.data);
+    setIsFetching(false);
   };
 
   const onChangeRequestText = (text: string) => {
@@ -74,7 +85,9 @@ const Console = () => {
         <TabsBlock />
         <ConsoleFields
           requestError={requestError}
+          responseError={responseError}
           value={requestText}
+          responseText={responseText}
           onChangeValue={onChangeRequestText}
           fieldHeight={screenHeight - 170}
         />

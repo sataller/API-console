@@ -14,6 +14,15 @@ export type ConsoleHeaderPropsType = {
 const ConsoleHeader = ({setIsFullScreen, isFullScreen}: ConsoleHeaderPropsType) => {
   const [value, setValue] = useState('iamyourlogin@domain.xyz : Sublogin');
   const history = useHistory();
+
+  React.useEffect(() => {
+    const userInfo = localStorage.getItem('user');
+    if (userInfo) {
+      const user = JSON.parse(userInfo);
+      setValue(`${user.login} ${user.sublogin ? `: ${user.sublogin}` : ''}`);
+    }
+  }, []);
+
   const onLogoutClick = () => {
     history.push(`/login`);
     logOut();
