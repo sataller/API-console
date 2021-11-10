@@ -3,18 +3,12 @@ export const setUserRequests = (response: {response: any; request: any; status: 
     dataList: {},
     maxLength: 20,
   };
+
   let userActions = localStorage.getItem('userActions');
-  if (userActions) {
-    data = JSON.parse(userActions);
-  }
+
+  data = userActions ? JSON.parse(userActions) : data;
+
   const key = data.maxLength ? data.maxLength - 1 : 19;
-  // data = {
-  //   ...data,
-  //   [key]: {
-  //     ...response,
-  //   },
-  //   maxLength: key,
-  // };
   data = {
     ...data,
     dataList: {

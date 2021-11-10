@@ -18,8 +18,7 @@ export const logIn = async (payload: LoginPayloadType) => {
   try {
     await sendsay.login(payload);
     localStorage.setItem('token', sendsay.session);
-    const user = await sendsay.getUsername().split('/')[0];
-    sendsay.auth.sublogin = user;
+    sendsay.auth.sublogin = await sendsay.getUsername().split('/')[0];
     localStorage.setItem('user', JSON.stringify({login: payload.login, sublogin: payload.sublogin || ''}));
 
     return {data: sendsay.session, status: Status.OK};
@@ -27,16 +26,28 @@ export const logIn = async (payload: LoginPayloadType) => {
     return {data: error, status: Status.ERROR};
   }
 };
-export const request = async (payload: any) => {
+export const request = async (payload: any): Promise<{data: any; status: string}> => {
   try {
     const response = await sendsay.request(payload);
-    console.log(response);
-    setUserRequests({response: response, request: payload, status: Status.OK});
-    return {data: response, status: Status.OK};
+    // setUserRequests({response: response, request: payload, status: Status.OK});
+    return {data: {response: response, request: payload, status: Status.OK}, status: Status.OK};
   } catch (error) {
     console.log(error);
     setUserRequests({response: error, request: payload, status: Status.ERROR});
     return {data: error, status: Status.ERROR};
+  }
+};
+
+export const isAuth = async () => {
+  try {
+    const response = await sendsay.request({
+      action: 'pong',
+    });
+
+    return !!response?.ping;
+  } catch (error) {
+    console.log(error);
+    return false;
   }
 };
 

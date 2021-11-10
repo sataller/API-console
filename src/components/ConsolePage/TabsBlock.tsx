@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import CloseButton from './CloseButton';
 import Tabs from './Tabs';
+import {useAppSelector} from '../../hooks/redux';
 
 type TabsBlockType = {
   setViewText: (requestText: string, responseText: string) => void;
@@ -10,6 +11,7 @@ type TabsBlockType = {
 
 const TabsBlock = ({sendRequest, setViewText}: TabsBlockType) => {
   const [userRequests, setUserRequests] = React.useState();
+  const {data} = useAppSelector((state) => state.request);
   React.useEffect(() => {
     const data = localStorage.getItem('userActions');
     if (data) {
@@ -19,7 +21,7 @@ const TabsBlock = ({sendRequest, setViewText}: TabsBlockType) => {
 
   return (
     <Wrapper>
-      <Tabs sendRequest={sendRequest} setViewText={setViewText} data={userRequests} />
+      <Tabs sendRequest={sendRequest} setViewText={setViewText} data={data} />
       <CloseButton />
     </Wrapper>
   );

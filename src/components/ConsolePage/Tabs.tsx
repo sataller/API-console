@@ -34,7 +34,7 @@ const Tabs = ({sendRequest, data, setViewText}: TabsPropsType) => {
         responseText={data?.dataList[key].response}
         setViewText={setViewText}
         id={key}
-        title={data?.dataList[key].request.action}
+        title={data?.dataList[key]?.request?.action}
         isError={data?.dataList[key].status === Status.ERROR}
         key={key}
       />,

@@ -59,7 +59,7 @@ const Login = () => {
     },
   });
 
-  const getPayload = (values: any) => {
+  const getPayload = (values: {[key: string]: string}) => {
     const payload: {[key: string]: string} = {};
     for (let key in values) {
       if (values[key] !== '') {
@@ -74,14 +74,13 @@ const Login = () => {
     setIsFetching(true);
     const response = await logIn(payload);
 
-    if (response.status === Status.ERROR) {
-      setError(`{id: ${response?.data?.id}, explain: ${response?.data?.explain}`);
-    } else {
-      history.push(`/console`);
-    }
+    response.status === Status.ERROR
+      ? setError(`{id: ${response?.data?.id}, explain: ${response?.data?.explain}`)
+      : history.push(`/console`);
 
     setIsFetching(false);
   };
+
   return (
     <Wrapper>
       <Logo />

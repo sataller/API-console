@@ -1,4 +1,13 @@
-export const copyResponse = ({id, viewToast}: {id: string; viewToast: (text: string) => void}) => {
+import React from 'react';
+
+type CopyResponseType = {
+  e: React.MouseEvent<HTMLImageElement, MouseEvent>;
+  id: string;
+  viewToast: (text: string) => void;
+};
+
+export const copyResponse = ({e, id, viewToast}: CopyResponseType) => {
+  e.stopPropagation();
   let data = localStorage.getItem('userActions');
   if (data) {
     navigator.clipboard

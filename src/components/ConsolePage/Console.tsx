@@ -5,20 +5,18 @@ import {FullScreen, useFullScreenHandle} from 'react-full-screen';
 import TabsBlock from './TabsBlock';
 import ConsoleFooter from './ConsoleFooter';
 import ConsoleFields from './ConsoleFields';
-import * as api from '../../api/api';
-import {Status} from '../../api/api';
-
-const json = `{"array": [1,2,3],"boolean":true,"null": null,"number":"four","object":{"a":"b","c": "d"},"string":"HelloWorld"}`;
+import {asyncRequestAction} from '../../store/sags/asyncActions';
+import {useAppDispatch, useAppSelector} from '../../hooks/redux';
+import {initActions, setResponseError, setIsFetching, setRequestError} from '../../store/reducers/requestReducer';
 
 const Console = () => {
+  const {responseError, requestError, isFetching} = useAppSelector((state) => state.request);
+  const dispatch = useAppDispatch();
   const fullScreeRef = React.useRef<HTMLDivElement>(null);
   const [isFullScreen, setIsFullScreen] = React.useState<boolean>(false);
   const [screenHeight, setScreenHeight] = React.useState(0);
-  const [requestError, setRequestError] = React.useState<boolean>(false);
-  const [responseError, setResponseError] = React.useState<boolean>(false);
-  const [requestText, setRequestText] = React.useState<string>(json);
+  const [requestText, setRequestText] = React.useState<string>('');
   const [responseText, setResponseText] = React.useState<string>('');
-  const [isFetching, setIsFetching] = React.useState<boolean>(false);
   const handle = useFullScreenHandle();
 
   const switchFullScreen = () => {
@@ -30,6 +28,9 @@ const Console = () => {
       setIsFullScreen(true);
     }
   };
+  React.useEffect(() => {
+    dispatch(initActions());
+  }, [dispatch]);
 
   React.useEffect(() => {
     if (handle.active) {
@@ -39,12 +40,14 @@ const Console = () => {
     }
   }, [handle.active]);
 
+  React.useEffect(() => {}, [responseError, requestError]);
+
   const formatJson = () => {
     try {
       const string = JSON.parse(requestText.replace(/\s+/g, ''));
       setRequestText(JSON.stringify(string, null, 2));
     } catch (error) {
-      setRequestError(true);
+      dispatch(setRequestError(true));
     }
   };
 
@@ -58,23 +61,19 @@ const Console = () => {
   };
 
   const sendRequest = async () => {
-    setResponseError(false);
+    dispatch(setResponseError(false));
     const isValid = validateJson();
     if (!isValid) {
-      setRequestError(true);
+      dispatch(setRequestError(true));
       return;
     }
-    setIsFetching(true);
-    const response = await api.request(JSON.parse(requestText));
-    if (response.status === Status.ERROR) {
-      setResponseError(true);
-    }
-    setResponseText(response.data);
-    setIsFetching(false);
+    dispatch(setIsFetching(true));
+    dispatch(asyncRequestAction(JSON.parse(requestText)));
+    dispatch(setIsFetching(false));
   };
 
   const onChangeRequestText = (text: string) => {
-    setRequestError(false);
+    dispatch(setRequestError(false));
     setRequestText(text);
   };
 
@@ -82,7 +81,7 @@ const Console = () => {
     setRequestText(requestText);
     setResponseText(responseText);
   };
-
+  console.log(requestError);
   return (
     <FullScreen handle={handle}>
       <Wrapper height={screenHeight} ref={fullScreeRef}>

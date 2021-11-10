@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 type SubMenuPropsType = {
-  copy: () => void;
+  copy: (e: React.MouseEvent<HTMLImageElement, MouseEvent>) => void;
   deleteTab: () => void;
   perform: () => void;
 };

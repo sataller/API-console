@@ -30,7 +30,8 @@ const Tab = ({sendRequest, responseText, requestText, id, isError, title, setVie
     }, 3000);
   };
 
-  const viewSubMenu = () => {
+  const viewSubMenu = (e: React.MouseEvent<HTMLImageElement, MouseEvent>) => {
+    e.stopPropagation();
     setIsVisibleSubMenu(!isVisibleSubMenu);
   };
 
@@ -62,9 +63,15 @@ const Tab = ({sendRequest, responseText, requestText, id, isError, title, setVie
         <IndicatorIcon isError={isError} />
         {isVisibleToast && <Toast>{toastText}</Toast>}
         <Title>{title || 'no action'}</Title>
-        <OptionsIcon src={optionsIcon} onClick={viewSubMenu} />
+        <OptionsIcon src={optionsIcon} onClick={(e) => viewSubMenu(e)} />
       </TabWrapper>
-      {isVisibleSubMenu && <SubMenu perform={perform} deleteTab={deleteTab} copy={() => copyResponse({id, viewToast})} />}
+      {isVisibleSubMenu && (
+        <SubMenu
+          perform={perform}
+          deleteTab={deleteTab}
+          copy={(e: React.MouseEvent<HTMLImageElement, MouseEvent>) => copyResponse({e, id, viewToast})}
+        />
+      )}
     </TabBlock>
   );
 };
