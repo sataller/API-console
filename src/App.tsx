@@ -19,7 +19,7 @@ const App = () => {
     if (!userLocal && !userToken) return;
 
     sendsay.session = sendsay.session || userToken;
-
+    //ToDo
     return requestIsAuth();
   };
 

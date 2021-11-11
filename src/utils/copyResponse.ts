@@ -10,7 +10,8 @@ export const copyResponse = ({e, id, viewToast}: CopyResponseType) => {
   e.stopPropagation();
   let data = localStorage.getItem('userActions');
   if (data) {
-    navigator.clipboard
+    console.log(window.isSecureContext);
+    navigator?.clipboard
       .writeText(JSON.stringify(JSON.parse(data).dataList[id].request))
       .then(() => {
         console.log('copied');

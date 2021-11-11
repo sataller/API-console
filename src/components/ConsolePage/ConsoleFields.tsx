@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import dotsIcon from '../../assets/icons/dots.svg';
 import RequestField from './RequestField';
 import ResponseField from './ResponseField';
-import {useResize} from '../../utils/useResize';
+import {useResize} from '../../hooks/useResize';
 
 const ConsoleFields = ({
   fieldHeight,

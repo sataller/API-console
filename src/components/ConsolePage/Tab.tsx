@@ -4,7 +4,8 @@ import IndicatorIcon from './IndicatorIcon';
 import optionsIcon from '../../assets/icons/dots.svg';
 import SubMenu from './SubMenu';
 import {copyResponse} from '../../utils/copyResponse';
-import {deleteUserAction} from '../../utils/deleteUserAction';
+import {useAppDispatch} from '../../hooks/redux';
+import {removeAction, setActiveTub} from '../../store/reducers/requestReducer';
 
 type TabPropsType = {
   id: string;
@@ -13,10 +14,11 @@ type TabPropsType = {
   responseText: any;
   requestText: any;
   setViewText: (requestText: string, responseText: string) => void;
-  sendRequest: () => Promise<void>;
+  sendRequest: (id?: string) => void;
 };
 
 const Tab = ({sendRequest, responseText, requestText, id, isError, title, setViewText}: TabPropsType) => {
+  const dispatch = useAppDispatch();
   const [isVisibleSubMenu, setIsVisibleSubMenu] = React.useState(false);
   const [isVisibleToast, setIsVisibleToast] = React.useState(false);
   const [toastText, setToastText] = React.useState('Скопировано');
@@ -42,18 +44,19 @@ const Tab = ({sendRequest, responseText, requestText, id, isError, title, setVie
   };
 
   const deleteTab = () => {
-    deleteUserAction(id);
+    dispatch(removeAction({id}));
     setIsVisibleSubMenu(false);
   };
 
   const perform = async () => {
     openTab();
-    await sendRequest();
+    await sendRequest(id);
     setIsVisibleSubMenu(false);
     console.log('perform');
   };
 
   const openTab = () => {
+    dispatch(setActiveTub(+id));
     setViewText(JSON.stringify(requestText), responseText);
   };
 

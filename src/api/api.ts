@@ -1,5 +1,4 @@
 import {sendsay} from '../initSendsay';
-import {setUserRequests} from '../utils/setUserAction';
 
 export type LoginPayloadType = {
   login: string;
@@ -29,12 +28,10 @@ export const logIn = async (payload: LoginPayloadType) => {
 export const request = async (payload: any): Promise<{data: any; status: string}> => {
   try {
     const response = await sendsay.request(payload);
-    // setUserRequests({response: response, request: payload, status: Status.OK});
     return {data: {response: response, request: payload, status: Status.OK}, status: Status.OK};
   } catch (error) {
     console.log(error);
-    setUserRequests({response: error, request: payload, status: Status.ERROR});
-    return {data: error, status: Status.ERROR};
+    return {data: {response: error, request: payload, status: Status.ERROR}, status: Status.ERROR};
   }
 };
 
@@ -43,7 +40,6 @@ export const isAuth = async () => {
     const response = await sendsay.request({
       action: 'pong',
     });
-
     return !!response?.ping;
   } catch (error) {
     console.log(error);

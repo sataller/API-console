@@ -5,7 +5,7 @@ import FormatButton from './FormatButton';
 
 type FooterPropsType = {
   formatJson: () => void;
-  sendRequest: () => void;
+  sendRequest: (id: string) => void;
   error: boolean;
   isFetching: boolean;
 };
@@ -13,7 +13,7 @@ type FooterPropsType = {
 const ConsoleFooter = ({formatJson, sendRequest, error, isFetching}: FooterPropsType) => {
   return (
     <Wrapper>
-      <CustomButton isFetching={isFetching} text={'Send'} isError={error} onSubmit={sendRequest} />
+      <CustomButton isFetching={isFetching} text={'Send'} isError={error} onSubmit={() => sendRequest(``)} />
       <LinkToGit>@link-to-your-github</LinkToGit>
       <FormatButton onClick={formatJson} />
     </Wrapper>

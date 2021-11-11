@@ -6,18 +6,11 @@ import {useAppSelector} from '../../hooks/redux';
 
 type TabsBlockType = {
   setViewText: (requestText: string, responseText: string) => void;
-  sendRequest: () => Promise<void>;
+  sendRequest: () => void;
 };
 
 const TabsBlock = ({sendRequest, setViewText}: TabsBlockType) => {
-  const [userRequests, setUserRequests] = React.useState();
   const {data} = useAppSelector((state) => state.request);
-  React.useEffect(() => {
-    const data = localStorage.getItem('userActions');
-    if (data) {
-      setUserRequests(JSON.parse(data));
-    }
-  }, []);
 
   return (
     <Wrapper>

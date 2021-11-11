@@ -5,16 +5,18 @@ import {FullScreen, useFullScreenHandle} from 'react-full-screen';
 import TabsBlock from './TabsBlock';
 import ConsoleFooter from './ConsoleFooter';
 import ConsoleFields from './ConsoleFields';
-import {asyncRequestAction} from '../../store/sags/asyncActions';
+import {asyncRequestAction, asyncUpdateRequestAction} from '../../store/sags/asyncActions';
 import {useAppDispatch, useAppSelector} from '../../hooks/redux';
-import {initActions, setResponseError, setIsFetching, setRequestError} from '../../store/reducers/requestReducer';
+import {initActions, setRequestError} from '../../store/reducers/requestReducer';
+import {Status} from '../../api/api';
 
 const Console = () => {
-  const {responseError, requestError, isFetching} = useAppSelector((state) => state.request);
+  const {requestError, data, isFetching, activeTab} = useAppSelector((state) => state.request);
   const dispatch = useAppDispatch();
   const fullScreeRef = React.useRef<HTMLDivElement>(null);
   const [isFullScreen, setIsFullScreen] = React.useState<boolean>(false);
   const [screenHeight, setScreenHeight] = React.useState(0);
+  const [responseError, setResponseError] = React.useState<boolean>(false);
   const [requestText, setRequestText] = React.useState<string>('');
   const [responseText, setResponseText] = React.useState<string>('');
   const handle = useFullScreenHandle();
@@ -40,7 +42,13 @@ const Console = () => {
     }
   }, [handle.active]);
 
-  React.useEffect(() => {}, [responseError, requestError]);
+  React.useEffect(() => {
+    const key = data?.dataList?.hasOwnProperty(activeTab) ? activeTab : '20';
+    const status = data?.dataList[key]?.status === Status.ERROR;
+    setResponseError(status);
+    setResponseText(data?.dataList[key]?.response);
+    setRequestText(JSON.stringify(data?.dataList[key]?.request));
+  }, [responseError, requestError, data?.dataList, activeTab, data]);
 
   const formatJson = () => {
     try {
@@ -53,23 +61,22 @@ const Console = () => {
 
   const validateJson = () => {
     try {
-      JSON.parse(requestText.replace(/\s+/g, ''));
-      return true;
+      console.log(JSON.parse(requestText.replace(/\s+/g, '')));
+      const formatText = JSON.parse(requestText.replace(/\s+/g, ''));
+      return {isError: false, formatText};
     } catch (error) {
-      return false;
+      return {isError: true, formatText: ''};
     }
   };
 
-  const sendRequest = async () => {
-    dispatch(setResponseError(false));
+  const sendRequest = (id?: string) => {
+    setResponseError(false);
     const isValid = validateJson();
-    if (!isValid) {
+    if (isValid.isError) {
       dispatch(setRequestError(true));
       return;
     }
-    dispatch(setIsFetching(true));
-    dispatch(asyncRequestAction(JSON.parse(requestText)));
-    dispatch(setIsFetching(false));
+    id ? dispatch(asyncUpdateRequestAction(isValid.formatText)) : dispatch(asyncRequestAction(isValid.formatText));
   };
 
   const onChangeRequestText = (text: string) => {
@@ -81,7 +88,7 @@ const Console = () => {
     setRequestText(requestText);
     setResponseText(responseText);
   };
-  console.log(requestError);
+
   return (
     <FullScreen handle={handle}>
       <Wrapper height={screenHeight} ref={fullScreeRef}>

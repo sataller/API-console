@@ -9,13 +9,14 @@ type StateType = {
   responseError: boolean;
   requestError: boolean;
   isFetching: boolean;
+  activeTab: number;
 };
 
 type DataListType = {
   [key: string]: DataItemType;
 };
 
-type DataItemType = {
+export type DataItemType = {
   request: any;
   response: any;
   status: string;
@@ -26,19 +27,20 @@ const newField = {
     action: 'new field',
   },
   response: {},
-  status: '',
+  status: 'Ok',
 };
 
 const initialState: StateType = {
   data: {
     dataList: {
-      '0': newField,
+      '20': newField,
     },
     maxLength: 0,
   },
   responseError: false,
   requestError: false,
   isFetching: false,
+  activeTab: 0,
 };
 
 const requestSlice = createSlice({
@@ -47,35 +49,30 @@ const requestSlice = createSlice({
   reducers: {
     initActions: (state) => {
       const actions = localStorage.getItem('userActions');
-      state = actions ? JSON.parse(actions) : initialState;
+      state.data = actions ? JSON.parse(actions).data : initialState.data;
       return state;
     },
     addAction: (state, action: PayloadAction<{data: DataItemType; status: string}>) => {
-      const key = state.data.maxLength >= 20 ? 20 : state.data.maxLength + 1;
+      const key = state.data.maxLength >= 19 ? 0 : state.data.maxLength;
       state.responseError = action.payload.data.status === Status.ERROR;
-      state.data.dataList[key - 1] = action.payload.data;
-      state.data.dataList[key] = newField;
-      state.data.maxLength = key;
+      state.data.dataList[key] = action.payload.data;
+      state.activeTab = key;
+      state.data.maxLength = state.data.maxLength >= 19 ? 0 : key + 1;
       localStorage.setItem('userActions', JSON.stringify(state));
       return state;
     },
-    setIsFetching: (state, action: PayloadAction<boolean>) => {
-      state.isFetching = action.payload;
-      return state;
-    },
-    setAction: (state) => {
-      const actions = localStorage.getItem('userActions');
-      state = actions ? JSON.parse(actions) : {};
+    setIsFetching: (state) => {
+      console.log(state.isFetching);
+      state.isFetching = !state.isFetching;
       return state;
     },
     removeAction: (state, action: PayloadAction<{id: string}>) => {
-      const newData: DataListType = {};
-      let removed = false;
-      for (let key in state.data.dataList) {
-        removed = key === action.payload.id;
-        removed ? (newData[`${+key - 1}`] = state.data.dataList[key]) : (newData[`${+key}`] = state.data.dataList[key]);
-      }
+      const newData: DataListType = {
+        ...state.data.dataList,
+      };
+      delete newData[action.payload.id];
       state.data.dataList = newData;
+      state.activeTab = 20;
       state.data.maxLength = state.data.maxLength - 1;
       localStorage.setItem('userActions', JSON.stringify(state));
       return state;
@@ -90,8 +87,8 @@ const requestSlice = createSlice({
       localStorage.setItem('userActions', JSON.stringify(state));
       return state;
     },
-    setResponseError: (state, action: PayloadAction<boolean>) => {
-      state.responseError = action.payload;
+    setActiveTub: (state, action: PayloadAction<number>) => {
+      state.activeTab = action.payload;
       return state;
     },
     setRequestError: (state, action: PayloadAction<boolean>) => {
@@ -103,14 +100,5 @@ const requestSlice = createSlice({
 
 export default requestSlice.reducer;
 
-export const {
-  addAction,
-  setAction,
-  removeAction,
-  updateAction,
-  removeAllActions,
-  setResponseError,
-  initActions,
-  setIsFetching,
-  setRequestError,
-} = requestSlice.actions;
+export const {addAction, removeAction, updateAction, removeAllActions, setActiveTub, initActions, setIsFetching, setRequestError} =
+  requestSlice.actions;

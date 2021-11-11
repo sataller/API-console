@@ -1,6 +1,6 @@
 import {all} from 'redux-saga/effects';
-import {requestWatcher} from './requestSagas';
+import {requestWatcher, updateRequestWatcher} from './requestSagas';
 
 export function* rootWatcher() {
-  yield all([requestWatcher()]);
+  yield all([requestWatcher(), updateRequestWatcher]);
 }
