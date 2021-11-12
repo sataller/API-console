@@ -1,137 +1,114 @@
-import React, {useState} from 'react';
-import {logOut} from '../../api/api';
-import {useHistory} from 'react-router-dom';
+import React from 'react';
 import styled from 'styled-components';
-import Logo from '../reusibleComponents/Logo';
-import logoutIcon from '../../assets/icons/log-out.svg';
-import fullScreenIcon from '../../assets/icons/full-screen.svg';
+import ConsoleHeader from './ConsoleHeader';
+import {FullScreen, useFullScreenHandle} from 'react-full-screen';
+import TabsBlock from './TabsBlock';
+import ConsoleFooter from './ConsoleFooter';
+import ConsoleFields from './ConsoleFields';
+import * as api from '../../api/api';
+import {Status} from '../../api/api';
+
+const json = `{"array": [1,2,3],"boolean":true,"null": null,"number":"four","object":{"a":"b","c": "d"},"string":"HelloWorld"}`;
 
 const Console = () => {
+  const fullScreeRef = React.useRef<HTMLDivElement>(null);
+  const [isFullScreen, setIsFullScreen] = React.useState<boolean>(false);
+  const [screenHeight, setScreenHeight] = React.useState(0);
+  const [requestError, setRequestError] = React.useState<boolean>(false);
+  const [responseError, setResponseError] = React.useState<boolean>(false);
+  const [requestText, setRequestText] = React.useState<string>(json);
+  const [responseText, setResponseText] = React.useState<string>('');
+  const [isFetching, setIsFetching] = React.useState<boolean>(false);
+  const handle = useFullScreenHandle();
 
-  const [value, setValue] = useState('iamyourlogin@domain.xyz : Sublogin');
-  const history = useHistory();
-  const onLogoutClick = () => {
-    history.push(`/login`);
-    logOut();
-  };
-  const handleChange = (e: any) => {
-    setValue(e.turget.value);
+  const switchFullScreen = () => {
+    if (handle.active) {
+      handle.exit();
+      setIsFullScreen(false);
+    } else {
+      handle.enter();
+      setIsFullScreen(true);
+    }
   };
 
+  React.useEffect(() => {
+    if (handle.active) {
+      setScreenHeight(window.screen.height);
+    } else {
+      setScreenHeight(window.innerHeight);
+    }
+  }, [handle.active]);
+
+  const formatJson = () => {
+    try {
+      const string = JSON.parse(requestText.replace(/\s+/g, ''));
+      setRequestText(JSON.stringify(string, null, 2));
+    } catch (error) {
+      setRequestError(true);
+    }
+  };
+
+  const validateJson = () => {
+    try {
+      JSON.parse(requestText.replace(/\s+/g, ''));
+      return true;
+    } catch (error) {
+      return false;
+    }
+  };
+
+  const sendRequest = async () => {
+    setResponseError(false);
+    const isValid = validateJson();
+    if (!isValid) {
+      setRequestError(true);
+      return;
+    }
+    setIsFetching(true);
+    const response = await api.request(JSON.parse(requestText));
+    if (response.status === Status.ERROR) {
+      setResponseError(true);
+    }
+    setResponseText(response.data);
+    setIsFetching(false);
+  };
+
+  const onChangeRequestText = (text: string) => {
+    setRequestError(false);
+    setRequestText(text);
+  };
+
+  const setViewText = (requestText: string, responseText: string) => {
+    setRequestText(requestText);
+    setResponseText(responseText);
+  };
 
   return (
-    <Wrapper>
-
-      <Header>
-        <HeaderItem>
-          <Logo />
-          <Title>API-консолька</Title>
-        </HeaderItem>
-        <HeaderItem>
-          <UserInfo onChange={handleChange} value={value} />
-          <LogoutButton>
-            Выход
-            <LogoutIcon src={logoutIcon} />
-          </LogoutButton>
-          <FullScreenIcon src={fullScreenIcon} />
-        </HeaderItem>
-      </Header>
-      {/*Console*/}
-      {/*<button onClick={onLogoutClick}>jagsfjhghjdgf</button>*/}
-    </Wrapper>
+    <FullScreen handle={handle}>
+      <Wrapper height={screenHeight} ref={fullScreeRef}>
+        <ConsoleHeader setIsFullScreen={switchFullScreen} isFullScreen={isFullScreen} />
+        <TabsBlock setViewText={setViewText} sendRequest={sendRequest} />
+        <ConsoleFields
+          requestError={requestError}
+          responseError={responseError}
+          requestText={requestText}
+          responseText={responseText}
+          onChangeValue={onChangeRequestText}
+          fieldHeight={screenHeight - 170}
+        />
+        <ConsoleFooter isFetching={isFetching} error={requestError} sendRequest={sendRequest} formatJson={formatJson} />
+      </Wrapper>
+    </FullScreen>
   );
 };
 
 export default Console;
 
-const Wrapper = styled.div`
+const Wrapper = styled.div<{height: number}>`
   max-width: 100%;
-  min-height: 870px;
-  background: #693535;
+  min-height: ${(props) => props.height}px;
+  background: #ffffff;
   margin: 0;
   padding: 0;
-`;
-
-const Header = styled.div`
-  padding: 10px 15px;
-  height: 50px;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: #F6F6F6;
-`;
-
-const HeaderItem = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
-const Title = styled.h1`
-
-  font-family: SF Pro Text;
-  font-style: normal;
-  font-weight: normal;
-  font-size: 20px;
-  line-height: 30px;
-
-  margin-left: 20px;
-  color: #0D0D0D;
-`;
-
-const UserInfo = styled.input`
-  appearance: unset;
-  max-width: 280px;
-  height: 40px;
-  padding: 6px 10px;
-
-  background: #FFFFFF;
-
-  border: 1px solid rgba(0, 0, 0, 0.2);
-  border-radius: 5px;
-
-  &:hover {
-    border: 1px solid rgba(0, 0, 0, 0.4);
-  }
-
-  &:focus {
-    outline: 2px solid rgba(0, 0, 0, 0.2);
-    border: 1px solid rgba(0, 0, 0, 0.4);
-  }
-`;
-
-const LogoutButton = styled.button`
-  cursor: pointer;
-  border: none;
-  background-color: unset;
-  margin-left: 35px;
-  padding: 0;
-  font-family: SF Pro Text;
-  font-style: normal;
-  font-weight: normal;
-  font-size: 16px;
-  line-height: 20px;
-
-  display: flex;
-  align-items: center;
-
-  color: #0D0D0D;
-
-  &:active {
-    color: #0055FB;
-  }
-`;
-
-const LogoutIcon = styled.img`
-  margin-left: 10px;
-  width: 16px;
-  height: 18px;
-`;
-
-const FullScreenIcon = styled.img`
-  cursor: pointer;
-  flex: none;
-  order: 2;
-  flex-grow: 0;
-  margin: 0 30px;
+  overflow: hidden;
 `;

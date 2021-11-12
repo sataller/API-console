@@ -1,5 +1,5 @@
 export const validatePassword = (password: string) => {
-  let error;
+  let error = '';
 
   if (!/[A-Z]+/.test(password)) {
     error = 'There must be one capital letter';
@@ -11,7 +11,7 @@ export const validatePassword = (password: string) => {
     error = 'There must be one lowercase letter';
   }
   if (/[а-я]/.test(password)) {
-    error = 'Can\'t use Cyrillic';
+    error = "Can't use Cyrillic";
   }
   if (password.length < 8) {
     error = 'Password must be longer than 8 сharacters';
@@ -19,11 +19,12 @@ export const validatePassword = (password: string) => {
   if (!password) {
     error = 'Required';
   }
+
   return error;
 };
 
 export const validateLogin = (login: string) => {
-  let error;
+  let error = '';
 
   if (!login) {
     error = 'Required';

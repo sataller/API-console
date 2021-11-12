@@ -1,10 +1,11 @@
 import {sendsay} from '../initSendsay';
+import {setUserRequests} from '../utils/setUserAction';
 
 export type LoginPayloadType = {
-  login: string
-  sublogin?: string
-  password: string
-}
+  login: string;
+  sublogin?: string;
+  password: string;
+};
 
 export enum Status {
   ERROR = 'ERROR',
@@ -13,20 +14,36 @@ export enum Status {
 
 export const logIn = async (payload: LoginPayloadType) => {
   sendsay.auth = {...payload};
+
   try {
     await sendsay.login(payload);
     localStorage.setItem('token', sendsay.session);
     const user = await sendsay.getUsername().split('/')[0];
     sendsay.auth.sublogin = user;
-  localStorage.setItem('user', JSON.stringify({login:payload.login, sublogin:payload.sublogin || ""}));
+    localStorage.setItem('user', JSON.stringify({login: payload.login, sublogin: payload.sublogin || ''}));
+
     return {data: sendsay.session, status: Status.OK};
   } catch (error) {
     return {data: error, status: Status.ERROR};
   }
 };
+export const request = async (payload: any) => {
+  try {
+    const response = await sendsay.request(payload);
+    console.log(response);
+    setUserRequests({response: response, request: payload, status: Status.OK});
+    return {data: response, status: Status.OK};
+  } catch (error) {
+    console.log(error);
+    setUserRequests({response: error, request: payload, status: Status.ERROR});
+    return {data: error, status: Status.ERROR};
+  }
+};
 
 export const logOut = () => {
-  localStorage.clear();
+  console.log('log out');
+  localStorage.removeItem('user');
+  localStorage.removeItem('token');
 };
 
 // Error response

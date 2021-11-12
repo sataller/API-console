@@ -2,13 +2,13 @@ import React from 'react';
 import {Label, Input} from './LoginStyles';
 
 type InputType = {
-  error?: string
-  id: string
-  placeholder: string
-  onChange:(e:React.FormEvent<HTMLInputElement>)=> void
-  value: string
-  type: string
-}
+  error?: string;
+  id: string;
+  placeholder: string;
+  onChange: (e: React.FormEvent<HTMLInputElement>) => void;
+  value: string;
+  type: string;
+};
 
 const CustomInput = ({error, id, placeholder, onChange, value, type}: InputType) => {
   return (
@@ -17,8 +17,7 @@ const CustomInput = ({error, id, placeholder, onChange, value, type}: InputType)
         {' '}
         {error || placeholder}
       </Label>
-      <Input onChange={onChange}
-             value={value} error={Boolean(error)} id={id} type={type} placeholder={placeholder} />
+      <Input onChange={onChange} value={value} error={Boolean(error)} id={id} type={type} placeholder={placeholder} />
     </>
   );
 };
