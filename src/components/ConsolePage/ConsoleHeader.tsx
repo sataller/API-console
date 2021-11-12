@@ -4,7 +4,8 @@ import LogoutButton from '../reusibleComponents/LogoutButton';
 import {FullScreenButton} from '../reusibleComponents/FullScreanButton';
 import styled from 'styled-components';
 import {useHistory} from 'react-router-dom';
-import {logOut} from '../../api/api';
+import {useAppDispatch, useAppSelector} from '../../hooks/redux';
+import {logout} from '../../store/reducers/authReducer';
 
 export type ConsoleHeaderPropsType = {
   setIsFullScreen: Dispatch<SetStateAction<boolean>>;
@@ -12,22 +13,20 @@ export type ConsoleHeaderPropsType = {
 };
 
 const ConsoleHeader = ({setIsFullScreen, isFullScreen}: ConsoleHeaderPropsType) => {
+  const dispatch = useAppDispatch();
+  const {user} = useAppSelector((state) => state.auth);
   const [value, setValue] = useState('iamyourlogin@domain.xyz : Sublogin');
   const history = useHistory();
 
   React.useEffect(() => {
-    const userInfo = localStorage.getItem('user');
-    if (userInfo) {
-      const user = JSON.parse(userInfo);
-      setValue(`${user.login} ${user.sublogin ? `: ${user.sublogin}` : ''}`);
-    }
-  }, []);
+    setValue(`${user.login} ${user.sublogin ? `: ${user.sublogin}` : ''}`);
+  }, [user.login, user.sublogin]);
 
   const onLogoutClick = () => {
     history.push(`/login`);
-    logOut();
+    dispatch(logout());
   };
-  const handleChange = (e: any) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValue(e.target.value);
   };
 
@@ -38,7 +37,7 @@ const ConsoleHeader = ({setIsFullScreen, isFullScreen}: ConsoleHeaderPropsType) 
         <Title>API-консолька</Title>
       </HeaderItem>
       <HeaderItem>
-        <UserInfo onChange={handleChange} value={value} disabled />
+        <UserInfo onChange={handleChange} value={value} />
         <LogoutButton onLogoutClick={onLogoutClick} />
         <FullScreenButton setIsFullScreen={setIsFullScreen} isFullScreen={isFullScreen} />
       </HeaderItem>

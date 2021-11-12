@@ -7,11 +7,14 @@ import ConsoleFooter from './ConsoleFooter';
 import ConsoleFields from './ConsoleFields';
 import {asyncRequestAction, asyncUpdateRequestAction} from '../../store/sags/asyncActions';
 import {useAppDispatch, useAppSelector} from '../../hooks/redux';
-import {initActions, setRequestError} from '../../store/reducers/requestReducer';
+// import {initActions, setRequestError} from '../../store/reducers/requestReducer';
+import * as requestAction from '../../store/reducers/requestReducer';
 import {Status} from '../../api/api';
+import {changeRequestText} from '../../store/reducers/requestReducer';
 
 const Console = () => {
   const {requestError, data, isFetching, activeTab} = useAppSelector((state) => state.request);
+  const {user} = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
   const fullScreeRef = React.useRef<HTMLDivElement>(null);
   const [isFullScreen, setIsFullScreen] = React.useState<boolean>(false);
@@ -30,9 +33,10 @@ const Console = () => {
       setIsFullScreen(true);
     }
   };
+
   React.useEffect(() => {
-    dispatch(initActions());
-  }, [dispatch]);
+    dispatch(requestAction.initActions({userName: user.login}));
+  }, [dispatch, user]);
 
   React.useEffect(() => {
     if (handle.active) {
@@ -52,20 +56,23 @@ const Console = () => {
 
   const formatJson = () => {
     try {
-      const string = JSON.parse(requestText.replace(/\s+/g, ''));
+      const string = formatString(requestText);
       setRequestText(JSON.stringify(string, null, 2));
     } catch (error) {
-      dispatch(setRequestError(true));
+      dispatch(requestAction.setRequestError(true));
     }
   };
 
-  const validateJson = () => {
+  const formatString = (text: string) => {
+    return JSON.parse(text.replace(/\s+/g, ' '));
+  };
+
+  const validateJson = (text?: string) => {
     try {
-      console.log(JSON.parse(requestText.replace(/\s+/g, '')));
-      const formatText = JSON.parse(requestText.replace(/\s+/g, ''));
+      const formatText = formatString(text || requestText);
       return {isError: false, formatText};
     } catch (error) {
-      return {isError: true, formatText: ''};
+      return {isError: true, formatText: requestText || ''};
     }
   };
 
@@ -73,15 +80,30 @@ const Console = () => {
     setResponseError(false);
     const isValid = validateJson();
     if (isValid.isError) {
-      dispatch(setRequestError(true));
+      dispatch(requestAction.setRequestError(true));
       return;
     }
-    id ? dispatch(asyncUpdateRequestAction(isValid.formatText)) : dispatch(asyncRequestAction(isValid.formatText));
+
+    const activeId = id || `${activeTab}`;
+    debugger;
+    activeId !== `20`
+      ? dispatch(
+          asyncUpdateRequestAction({
+            data: data.dataList[activeId].request,
+            id: activeId,
+          })
+        )
+      : dispatch(asyncRequestAction(isValid.formatText));
   };
 
   const onChangeRequestText = (text: string) => {
-    dispatch(setRequestError(false));
+    dispatch(requestAction.setRequestError(false));
     setRequestText(text);
+  };
+
+  const onBlur = (text: string) => {
+    const newText = formatString(text);
+    dispatch(changeRequestText({id: `${activeTab}`, newText}));
   };
 
   const setViewText = (requestText: string, responseText: string) => {
@@ -95,6 +117,7 @@ const Console = () => {
         <ConsoleHeader setIsFullScreen={switchFullScreen} isFullScreen={isFullScreen} />
         <TabsBlock setViewText={setViewText} sendRequest={sendRequest} />
         <ConsoleFields
+          onBlur={onBlur}
           requestError={requestError}
           responseError={responseError}
           requestText={requestText}

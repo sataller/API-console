@@ -12,6 +12,7 @@ const ConsoleFields = ({
   requestError,
   responseError,
   responseText,
+  onBlur,
 }: {
   fieldHeight: number;
   requestText: string;
@@ -19,6 +20,7 @@ const ConsoleFields = ({
   requestError: boolean;
   responseError: boolean;
   onChangeValue: (text: string) => void;
+  onBlur: (text: string) => void;
 }) => {
   const {resizeDots, rightField, leftField} = useResize();
 
@@ -30,7 +32,7 @@ const ConsoleFields = ({
     <Wrapper height={fieldHeight}>
       <FieldWrapper ref={leftField}>
         <Title error={requestError}>Request:</Title>
-        <RequestField value={requestText} onchange={onChangeText} error={requestError} />
+        <RequestField onBlur={onBlur} value={requestText} onchange={onChangeText} error={requestError} />
       </FieldWrapper>
       <div style={{display: 'flex'}} ref={resizeDots}>
         <ResizeIcon src={dotsIcon} />

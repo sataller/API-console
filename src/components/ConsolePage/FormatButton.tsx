@@ -39,4 +39,11 @@ const FormatButtonWrapper = styled.button`
   &:hover #format-icon {
     stroke: #0055fb;
   }
+  &:focus-visible {
+    outline-color: #45a5ff;
+    color: #0055fb;
+  }
+  &:focus-visible #format-icon {
+    stroke: #0055fb;
+  }
 `;

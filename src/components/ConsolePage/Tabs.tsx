@@ -1,7 +1,7 @@
 import React from 'react';
 import Tab from './Tab';
 import styled from 'styled-components';
-import {Status} from '../../api/api';
+import {Status, StatusType} from '../../api/api';
 import {useScroll} from '../../hooks/useScroll';
 
 export type TabsPropsType = {
@@ -10,7 +10,7 @@ export type TabsPropsType = {
       [key: string]: {
         response: any;
         request: any;
-        status: string;
+        status: StatusType;
       };
     };
     maxLength: number;

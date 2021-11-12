@@ -1,13 +1,15 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {Form, Title, Wrapper} from './LoginStyles';
 import {useFormik} from 'formik';
 import ErrorBlock from './ErrorBlock';
 import CustomInput from './CustomInput';
 import CustomButton from '../reusibleComponents/CustomButton';
 import Logo from '../reusibleComponents/Logo';
-import {logIn, LoginPayloadType, Status} from '../../api/api';
-import {validateLogin, validatePassword} from '../../utils/validation';
-import {useHistory} from 'react-router-dom';
+import {LoginPayloadType} from '../../api/api';
+import * as validation from '../../utils/validation';
+import {asyncLoginAction} from '../../store/sags/asyncActions';
+import {useAppDispatch, useAppSelector} from '../../hooks/redux';
+import {setError} from '../../store/reducers/authReducer';
 
 export type FormikValuesType = {
   login: string;
@@ -21,13 +23,12 @@ type FormikErrorType = {
 };
 
 const Login = () => {
-  const [isFetching, setIsFetching] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
+  const {error, errorText, isFetching} = useAppSelector((state) => state.auth);
+  const dispatch = useAppDispatch();
   const [validationError, setValidationErrors] = React.useState<{login: boolean; password: boolean}>({
     login: false,
     password: false,
   });
-  const history = useHistory();
   const form = useFormik<FormikValuesType>({
     initialValues: {
       login: '',
@@ -36,8 +37,8 @@ const Login = () => {
     },
     validate: (values) => {
       const errors: FormikErrorType = {};
-      const loginError = validateLogin(values.login);
-      const passwordError = validatePassword(values.password);
+      const loginError = validation.validateLogin(values.login);
+      const passwordError = validation.validatePassword(values.password);
 
       if (loginError !== '') {
         errors.login = loginError;
@@ -70,15 +71,8 @@ const Login = () => {
   };
 
   const onSubmit = async (payload: LoginPayloadType) => {
-    setError(null);
-    setIsFetching(true);
-    const response = await logIn(payload);
-
-    response.status === Status.ERROR
-      ? setError(`{id: ${response?.data?.id}, explain: ${response?.data?.explain}`)
-      : history.push(`/console`);
-
-    setIsFetching(false);
+    dispatch(setError({error: false}));
+    dispatch(asyncLoginAction(payload));
   };
 
   return (
@@ -86,7 +80,7 @@ const Login = () => {
       <Logo />
       <Form onSubmit={form.handleSubmit}>
         <Title>API-консолька</Title>
-        {error && <ErrorBlock errorText={error} />}
+        {error && <ErrorBlock errorText={errorText} />}
         <CustomInput
           key={'login'}
           error={form.errors.login}

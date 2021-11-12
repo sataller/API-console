@@ -65,7 +65,7 @@ const Tab = ({sendRequest, responseText, requestText, id, isError, title, setVie
       <TabWrapper>
         <IndicatorIcon isError={isError} />
         {isVisibleToast && <Toast>{toastText}</Toast>}
-        <Title>{title || 'no action'}</Title>
+        <Title>{title?.slice(0, 8) || 'no action'}</Title>
         <OptionsIcon src={optionsIcon} onClick={(e) => viewSubMenu(e)} />
       </TabWrapper>
       {isVisibleSubMenu && (
