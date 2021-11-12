@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import {useHistory} from 'react-router-dom';
 import {useAppDispatch, useAppSelector} from '../../hooks/redux';
 import {logout} from '../../store/reducers/authReducer';
+import {Constants} from '../../constants';
 
 export type ConsoleHeaderPropsType = {
   setIsFullScreen: Dispatch<SetStateAction<boolean>>;
@@ -34,11 +35,11 @@ const ConsoleHeader = ({setIsFullScreen, isFullScreen}: ConsoleHeaderPropsType) 
     <Header>
       <HeaderItem>
         <Logo />
-        <Title>API-консолька</Title>
+        <Title>{Constants.AppTitle}</Title>
       </HeaderItem>
       <HeaderItem>
         <UserInfo onChange={handleChange} value={value} />
-        <LogoutButton onLogoutClick={onLogoutClick} />
+        <LogoutButton title={Constants.Logout} onLogoutClick={onLogoutClick} />
         <FullScreenButton setIsFullScreen={setIsFullScreen} isFullScreen={isFullScreen} />
       </HeaderItem>
     </Header>

@@ -85,11 +85,10 @@ const Console = () => {
     }
 
     const activeId = id || `${activeTab}`;
-    debugger;
     activeId !== `20`
       ? dispatch(
           asyncUpdateRequestAction({
-            data: data.dataList[activeId].request,
+            data: data?.dataList[activeId]?.request,
             id: activeId,
           })
         )

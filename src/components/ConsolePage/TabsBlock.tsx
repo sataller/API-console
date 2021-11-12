@@ -10,11 +10,11 @@ type TabsBlockType = {
 };
 
 const TabsBlock = ({sendRequest, setViewText}: TabsBlockType) => {
-  const {data} = useAppSelector((state) => state.request);
+  const {data, userName} = useAppSelector((state) => state.request);
 
   return (
     <Wrapper>
-      <Tabs sendRequest={sendRequest} setViewText={setViewText} data={data} />
+      <Tabs userName={userName} sendRequest={sendRequest} setViewText={setViewText} data={data} />
       <CloseButton />
     </Wrapper>
   );

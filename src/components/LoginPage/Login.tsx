@@ -10,6 +10,7 @@ import * as validation from '../../utils/validation';
 import {asyncLoginAction} from '../../store/sags/asyncActions';
 import {useAppDispatch, useAppSelector} from '../../hooks/redux';
 import {setError} from '../../store/reducers/authReducer';
+import {Constants} from '../../constants';
 
 export type FormikValuesType = {
   login: string;
@@ -112,7 +113,7 @@ const Login = () => {
           margin={20}
           onSubmit={form.handleSubmit}
           isFetching={isFetching}
-          text={'Send'}
+          text={Constants.Login}
         />
       </Form>
     </Wrapper>

@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import CustomButton from '../reusibleComponents/CustomButton';
 import FormatButton from './FormatButton';
+import {Constants} from '../../constants';
 
 type FooterPropsType = {
   formatJson: () => void;
@@ -13,9 +14,9 @@ type FooterPropsType = {
 const ConsoleFooter = ({formatJson, sendRequest, error, isFetching}: FooterPropsType) => {
   return (
     <Wrapper>
-      <CustomButton isFetching={isFetching} text={'Send'} isError={error} onSubmit={() => sendRequest(``)} />
+      <CustomButton isFetching={isFetching} text={Constants.Send} isError={error} onSubmit={() => sendRequest(``)} />
       <LinkToGit>@link-to-your-github</LinkToGit>
-      <FormatButton onClick={formatJson} />
+      <FormatButton title={Constants.Format} onClick={formatJson} />
     </Wrapper>
   );
 };

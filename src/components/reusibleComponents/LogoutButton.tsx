@@ -1,10 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
 
-const LogoutButton = ({onLogoutClick}: {onLogoutClick: () => void}) => {
+const LogoutButton = ({onLogoutClick, title}: {title: string, onLogoutClick: () => void}) => {
   return (
     <LogoutButtonWrapper onClick={onLogoutClick}>
-      Выход
+      {title}
       <StyleSvg width="16" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <g id={'logout'} opacity="0.8">
           <path

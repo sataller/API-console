@@ -13,15 +13,20 @@ type TabPropsType = {
   title: string;
   responseText: any;
   requestText: any;
+  userName: string;
   setViewText: (requestText: string, responseText: string) => void;
   sendRequest: (id?: string) => void;
 };
 
-const Tab = ({sendRequest, responseText, requestText, id, isError, title, setViewText}: TabPropsType) => {
+const Tab = ({userName, sendRequest, responseText, requestText, id, isError, title, setViewText}: TabPropsType) => {
   const dispatch = useAppDispatch();
   const [isVisibleSubMenu, setIsVisibleSubMenu] = React.useState(false);
   const [isVisibleToast, setIsVisibleToast] = React.useState(false);
   const [toastText, setToastText] = React.useState('Скопировано');
+
+  React.useEffect(() => {
+
+  }, []);
 
   const viewToast = (text: string) => {
     setToastText(text);
@@ -66,13 +71,13 @@ const Tab = ({sendRequest, responseText, requestText, id, isError, title, setVie
         <IndicatorIcon isError={isError} />
         {isVisibleToast && <Toast>{toastText}</Toast>}
         <Title>{title?.slice(0, 8) || 'no action'}</Title>
-        <OptionsIcon src={optionsIcon} onClick={(e) => viewSubMenu(e)} />
+        {id !== '20' && <OptionsIcon src={optionsIcon} onClick={(e) => viewSubMenu(e)} />}
       </TabWrapper>
       {isVisibleSubMenu && (
         <SubMenu
           perform={perform}
           deleteTab={deleteTab}
-          copy={(e: React.MouseEvent<HTMLImageElement, MouseEvent>) => copyResponse({e, id, viewToast})}
+          copy={(e) => copyResponse({e, id, viewToast, userName})}
         />
       )}
     </TabBlock>

@@ -17,17 +17,19 @@ export type TabsPropsType = {
   };
   setViewText: (requestText: string, responseText: string) => void;
   sendRequest: () => void;
+  userName:string
 };
 
 const tabWidth = 140;
 const closeButtonWidth = 50;
 
-const Tabs = ({sendRequest, data, setViewText}: TabsPropsType) => {
+const Tabs = ({userName, sendRequest, data, setViewText}: TabsPropsType) => {
   const {scrollRef} = useScroll({data, tabWidth, closeButtonWidth});
 
   let tubsListE: JSX.Element[] = [];
 
   for (let key in data?.dataList) {
+    const title = key==='20'? 'work tub' : data?.dataList[key]?.request?.action;
     tubsListE = [
       ...tubsListE,
       <Tab
@@ -36,9 +38,10 @@ const Tabs = ({sendRequest, data, setViewText}: TabsPropsType) => {
         responseText={data?.dataList[key]?.response}
         setViewText={setViewText}
         id={key}
-        title={data?.dataList[key]?.request?.action}
+        title={title}
         isError={data?.dataList[key]?.status === Status.ERROR}
         key={key}
+        userName={userName}
       />,
     ];
   }

@@ -78,6 +78,6 @@ const Wrapper = styled.div<{height: number}>`
 `;
 
 const ResizeIcon = styled.img`
-  width: 10px;
+  width: 15px;
   cursor: col-resize;
 `;

@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-const FormatButton = ({onClick}: {onClick: () => void}) => {
+const FormatButton = ({onClick, title}: {title:string, onClick: () => void}) => {
   return (
     <FormatButtonWrapper onClick={onClick}>
       <FormatIcon width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -12,7 +12,7 @@ const FormatButton = ({onClick}: {onClick: () => void}) => {
           <path d="M7 18H3" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
         </g>
       </FormatIcon>
-      Форматировать
+      {title}
     </FormatButtonWrapper>
   );
 };

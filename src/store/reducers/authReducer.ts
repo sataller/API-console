@@ -20,7 +20,7 @@ const initialState: StateType = {
     sublogin: '',
   },
   isFetching: false,
-  isAuth: false,
+  isAuth: !!localStorage.getItem('token'),
   error: false,
   errorText: '',
 };
