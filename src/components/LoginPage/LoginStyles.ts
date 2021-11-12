@@ -38,7 +38,7 @@ export const Wrapper = styled.div`
   height: 100vh;
 `;
 
-export const Form = styled.section`
+export const Form = styled.form`
   display: flex;
   width: 520px;
   flex-direction: column;
@@ -46,6 +46,7 @@ export const Form = styled.section`
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   border-radius: 5px;
   padding: 40px 30px;
+  margin-top: 20px;
   @media (max-width: 550px) {
     width: 300px;
   }
@@ -110,16 +111,7 @@ export const Input = styled.input<{error?: boolean}>`
   box-shadow: ${(props) => (props.error ? ' 0px 0px 5px rgba(207, 44, 0, 0.5)' : 'unset')};
 `;
 
-export const Button = styled.button`
-  max-width: 110px;
-  min-height: 40px;
-  background: linear-gradient(180deg, #45a6ff 0%, #0055fb 100%), #c4c4c4;
-  border-radius: 5px;
-  margin-top: 20px;
-`;
-
 export const LogoStyled = styled.img`
   width: 115px;
   height: 30px;
-  margin-bottom: 20px;
 `;
