@@ -27,17 +27,17 @@ const ConsoleFields = ({
   const onChangeText = (e: ChangeEvent<HTMLTextAreaElement>) => {
     onChangeValue(e.target.value);
   };
-
+  console.log(fieldHeight);
   return (
     <Wrapper height={fieldHeight}>
-      <FieldWrapper ref={leftField}>
+      <FieldWrapper maxHeight={fieldHeight*0.95} ref={leftField}>
         <Title error={requestError}>Request:</Title>
         <RequestField onBlur={onBlur} value={requestText} onchange={onChangeText} error={requestError} />
       </FieldWrapper>
       <div style={{display: 'flex'}} ref={resizeDots}>
         <ResizeIcon src={dotsIcon} />
       </div>
-      <FieldWrapper ref={rightField}>
+      <FieldWrapper maxHeight={fieldHeight*0.95} ref={rightField}>
         <Title error={responseError}>Response:</Title>
         <ResponseField json={responseText} error={responseError} />
       </FieldWrapper>
@@ -47,9 +47,10 @@ const ConsoleFields = ({
 
 export default ConsoleFields;
 
-const FieldWrapper = styled.div`
+const FieldWrapper = styled.div<{maxHeight?:number}>`
   flex-grow: 0.5;
   min-width: 400px;
+  max-height: ${props => props.maxHeight}px;
   align-items: stretch;
 `;
 
@@ -74,7 +75,7 @@ const Wrapper = styled.div<{height: number}>`
   width: 100%;
 
   min-height: ${(props) => props.height}px;
-  padding: 0 15px 15px 15px;
+  padding: 0 15px;
 `;
 
 const ResizeIcon = styled.img`
