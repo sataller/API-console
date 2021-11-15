@@ -6,9 +6,24 @@ export const useResize = () => {
   const leftField = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
+    const rightFieldE = rightField.current;
+    const leftFieldE = leftField.current;
+
+    const lWidth = localStorage.getItem('leftFieldWidth');
+    const rWidth = localStorage.getItem('rightFieldWidth');
+
+    if (!rightFieldE || !leftFieldE || lWidth || rWidth) return;
+    rightFieldE.style.width = `${leftFieldE.clientWidth}`;
+    leftFieldE.style.width = `${rightFieldE.clientWidth}`;
+    localStorage.setItem('leftFieldWidth', `${leftFieldE.clientWidth}`);
+    localStorage.setItem('rightFieldWidth', `${rightFieldE.clientWidth}`);
+  }, []);
+
+  React.useEffect(() => {
     const resizeElement = resizeDots.current;
     const rightFieldE = rightField.current;
     const leftFieldE = leftField.current;
+
     if (!rightFieldE || !leftFieldE || !resizeElement) {
       return;
     }
