@@ -41,7 +41,7 @@ const initialState: StateType = {
   responseError: false,
   requestError: false,
   isFetching: false,
-  activeTab: 0,
+  activeTab: 20,
   userName: '',
 };
 
