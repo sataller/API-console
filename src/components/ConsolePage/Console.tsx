@@ -7,7 +7,6 @@ import ConsoleFooter from './ConsoleFooter';
 import ConsoleFields from './ConsoleFields';
 import {asyncRequestAction, asyncUpdateRequestAction} from '../../store/sags/asyncActions';
 import {useAppDispatch, useAppSelector} from '../../hooks/redux';
-// import {initActions, setRequestError} from '../../store/reducers/requestReducer';
 import * as requestAction from '../../store/reducers/requestReducer';
 import {Status} from '../../api/api';
 import {changeRequestText} from '../../store/reducers/requestReducer';

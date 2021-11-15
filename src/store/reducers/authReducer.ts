@@ -37,6 +37,7 @@ const authSlice = createSlice({
       return state;
     },
     setIsFetching: (state) => {
+      console.log('asdasd');
       state.isFetching = !state.isFetching;
       return state;
     },

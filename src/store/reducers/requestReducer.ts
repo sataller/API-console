@@ -99,7 +99,7 @@ const requestSlice = createSlice({
     },
     changeRequestText: (state, action: PayloadAction<{id: string; newText: string}>) => {
       const isExists = state.data.dataList.hasOwnProperty(action.payload.id);
-      if (isExists){
+      if (isExists) {
         state.data.dataList[action.payload.id].request = action.payload.newText;
         localStorage.setItem(`${state.userName}_Actions`, JSON.stringify(state));
       }

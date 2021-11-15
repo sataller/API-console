@@ -28,7 +28,6 @@ export const logIn = async (payload: LoginPayloadType): Promise<{data: any; stat
 };
 export const request = async (payload: any): Promise<{data: {response: any; request: any; status: StatusType}}> => {
   try {
-    console.log(payload);
     const response = await sendsay.request(payload);
     return {data: {response: response, request: payload, status: Status.OK}};
   } catch (error) {
