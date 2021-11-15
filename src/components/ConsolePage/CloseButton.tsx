@@ -2,10 +2,14 @@ import React from 'react';
 import styled from 'styled-components';
 import closeIcon from '../../assets/icons/cross.svg';
 
-const CloseButton = () => {
+const CloseButton = ({onClick}: {onClick: () => void}) => {
   return (
     <Wrapper>
-      <Button>
+      <Button
+        onClick={() => {
+          onClick();
+        }}
+      >
         <img src={closeIcon} alt={'close button'} />
       </Button>
     </Wrapper>
@@ -19,6 +23,7 @@ const Wrapper = styled.div`
   height: 100%;
   position: absolute;
   right: 0;
+  cursor: pointer;
 `;
 
 const Button = styled.div`

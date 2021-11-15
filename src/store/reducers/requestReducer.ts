@@ -105,6 +105,11 @@ const requestSlice = createSlice({
       }
       return state;
     },
+    removeAllRequests: (state) => {
+      localStorage.setItem(`${state.userName}_Actions`, JSON.stringify(initialState));
+      state = initialState;
+      return state;
+    },
   },
 });
 
@@ -120,4 +125,5 @@ export const {
   setIsFetching,
   setRequestError,
   changeRequestText,
+  removeAllRequests,
 } = requestSlice.actions;
