@@ -36,6 +36,11 @@ const Login = () => {
       sublogin: '',
       password: '',
     },
+    initialTouched: {
+      login: false,
+      password: false,
+    },
+    validateOnChange: false,
     validate: (values) => {
       const errors: FormikErrorType = {};
       const loginError = validation.validateLogin(values.login);
