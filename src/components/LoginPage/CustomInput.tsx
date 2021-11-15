@@ -6,18 +6,28 @@ type InputType = {
   id: string;
   placeholder: string;
   onChange: (e: React.FormEvent<HTMLInputElement>) => void;
+  onBlur?: (e: React.FormEvent<HTMLInputElement>) => void;
   value: string;
   type: string;
+  touched?: boolean;
 };
 
-const CustomInput = ({error, id, placeholder, onChange, value, type}: InputType) => {
+const CustomInput = ({touched, onBlur, error, id, placeholder, onChange, value, type}: InputType) => {
   return (
     <>
-      <Label error={Boolean(error)} htmlFor={id}>
+      <Label error={Boolean(error && touched)} htmlFor={id}>
         {' '}
-        {error || placeholder}
+        {touched && (error || placeholder)}
       </Label>
-      <Input onChange={onChange} value={value} error={Boolean(error)} id={id} type={type} placeholder={placeholder} />
+      <Input
+        onBlur={onBlur}
+        onChange={onChange}
+        value={value}
+        error={Boolean(error && touched)}
+        id={id}
+        type={type}
+        placeholder={placeholder}
+      />
     </>
   );
 };

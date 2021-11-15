@@ -45,7 +45,6 @@ const Login = () => {
       const errors: FormikErrorType = {};
       const loginError = validation.validateLogin(values.login);
       const passwordError = validation.validatePassword(values.password);
-
       if (loginError !== '') {
         errors.login = loginError;
       }
@@ -59,6 +58,7 @@ const Login = () => {
       });
       return errors;
     },
+
     onSubmit: (values) => {
       const payload = getPayload(values);
       onSubmit({...payload});
@@ -80,7 +80,6 @@ const Login = () => {
     dispatch(setError({error: false}));
     dispatch(asyncLoginAction(payload));
   };
-
   return (
     <Wrapper>
       <Logo />
@@ -89,6 +88,8 @@ const Login = () => {
         {error && <ErrorBlock errorText={errorText} />}
         <CustomInput
           key={'login'}
+          touched={form.touched.login}
+          onBlur={form.handleBlur}
           error={form.errors.login}
           id={'login'}
           onChange={form.handleChange}
@@ -106,7 +107,9 @@ const Login = () => {
         />
         <CustomInput
           key={'password'}
+          touched={form.touched.password}
           error={form.errors.password}
+          onBlur={form.handleBlur}
           id={'password'}
           placeholder="Password"
           onChange={form.handleChange}
@@ -114,7 +117,7 @@ const Login = () => {
           type={'password'}
         />
         <CustomButton
-          isError={validationError.login || validationError.password}
+          isError={(validationError.login && form.touched.login) || (validationError.password && form.touched.password)}
           margin={20}
           onSubmit={form.handleSubmit}
           isFetching={isFetching}
