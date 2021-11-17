@@ -97,6 +97,11 @@ const requestSlice = createSlice({
       state.requestError = action.payload;
       return state;
     },
+    setRequestText: (state, action: PayloadAction<{activeId: string; text: string}>) => {
+      state.data.dataList[action.payload.activeId].request = action.payload.text;
+      localStorage.setItem(`${state.userName}_Actions`, JSON.stringify(state));
+      return state;
+    },
     changeRequestText: (state, action: PayloadAction<{id: string; newText: string}>) => {
       const isExists = state.data.dataList.hasOwnProperty(action.payload.id);
       if (isExists) {
@@ -126,4 +131,5 @@ export const {
   setRequestError,
   changeRequestText,
   removeAllRequests,
+  setRequestText,
 } = requestSlice.actions;

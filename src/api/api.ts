@@ -27,12 +27,14 @@ export const logIn = async (payload: LoginPayloadType): Promise<{data: any; stat
   }
 };
 export const request = async (payload: any): Promise<{data: {response: any; request: any; status: StatusType}}> => {
+  const newPayload = typeof payload === 'string' ? JSON.parse(payload) : payload;
+
   try {
-    const response = await sendsay.request(payload);
-    return {data: {response: response, request: payload, status: Status.OK}};
+    const response = await sendsay.request(newPayload);
+    return {data: {response: response, request: newPayload, status: Status.OK}};
   } catch (error) {
     console.log(error);
-    return {data: {response: error, request: payload, status: Status.ERROR}};
+    return {data: {response: error, request: newPayload, status: Status.ERROR}};
   }
 };
 

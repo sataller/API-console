@@ -24,9 +24,7 @@ const Tab = ({userName, sendRequest, responseText, requestText, id, isError, tit
   const [isVisibleToast, setIsVisibleToast] = React.useState(false);
   const [toastText, setToastText] = React.useState('Скопировано');
 
-  React.useEffect(() => {
-
-  }, []);
+  React.useEffect(() => {}, []);
 
   const viewToast = (text: string) => {
     setToastText(text);
@@ -62,7 +60,7 @@ const Tab = ({userName, sendRequest, responseText, requestText, id, isError, tit
 
   const openTab = () => {
     dispatch(setActiveTub(+id));
-    setViewText(JSON.stringify(requestText), responseText);
+    setViewText(typeof requestText === 'string' ? requestText : JSON.stringify(requestText), responseText);
   };
 
   return (
@@ -73,13 +71,7 @@ const Tab = ({userName, sendRequest, responseText, requestText, id, isError, tit
         <Title>{title?.slice(0, 8) || 'no action'}</Title>
         {id !== '20' && <OptionsIcon src={optionsIcon} onClick={(e) => viewSubMenu(e)} />}
       </TabWrapper>
-      {isVisibleSubMenu && (
-        <SubMenu
-          perform={perform}
-          deleteTab={deleteTab}
-          copy={(e) => copyResponse({e, id, viewToast, userName})}
-        />
-      )}
+      {isVisibleSubMenu && <SubMenu perform={perform} deleteTab={deleteTab} copy={(e) => copyResponse({e, id, viewToast, userName})} />}
     </TabBlock>
   );
 };

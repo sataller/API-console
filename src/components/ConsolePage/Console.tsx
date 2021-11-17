@@ -50,7 +50,8 @@ const Console = () => {
     const status = data?.dataList[key]?.status === Status.ERROR;
     setResponseError(status);
     setResponseText(data?.dataList[key]?.response);
-    setRequestText(JSON.stringify(data?.dataList[key]?.request));
+    const request = data?.dataList[key]?.request;
+    setRequestText(typeof request === 'string' ? request : JSON.stringify(request));
   }, [responseError, requestError, data?.dataList, activeTab, data]);
 
   const formatJson = () => {
@@ -63,7 +64,12 @@ const Console = () => {
   };
 
   const formatString = (text: string) => {
-    return JSON.parse(text.replace(/\s+/g, ' '));
+    const newString = replaceString(text);
+    return JSON.parse(newString);
+  };
+
+  const replaceString = (text: string) => {
+    return text.replace(/\s+/g, ' ');
   };
 
   const validateJson = (text?: string) => {
@@ -71,19 +77,21 @@ const Console = () => {
       const formatText = formatString(text || requestText);
       return {isError: false, formatText};
     } catch (error) {
-      return {isError: true, formatText: requestText || ''};
+      return {isError: true, formatText: requestText || text || ''};
     }
   };
 
   const sendRequest = (id?: string) => {
     setResponseError(false);
     const isValid = validateJson();
+    const activeId = id || `${activeTab}`;
+
     if (isValid.isError) {
       dispatch(requestAction.setRequestError(true));
+      dispatch(requestAction.setRequestText({activeId, text: isValid.formatText}));
       return;
     }
 
-    const activeId = id || `${activeTab}`;
     activeId !== `20`
       ? dispatch(
           asyncUpdateRequestAction({
@@ -100,7 +108,13 @@ const Console = () => {
   };
 
   const onBlur = (text: string) => {
-    const newText = formatString(text);
+    let newText = text;
+    const isValid = validateJson();
+    if (isValid.isError) {
+      dispatch(requestAction.setRequestError(true));
+      dispatch(requestAction.setRequestText({activeId: `${activeTab}`, text: isValid.formatText}));
+      return;
+    }
     dispatch(changeRequestText({id: `${activeTab}`, newText}));
   };
 
@@ -108,7 +122,6 @@ const Console = () => {
     setRequestText(requestText);
     setResponseText(responseText);
   };
-
   return (
     <FullScreen handle={handle}>
       <Wrapper height={screenHeight} ref={fullScreeRef}>
