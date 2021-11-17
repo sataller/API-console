@@ -94,13 +94,13 @@ const Login = () => {
           id={'login'}
           onChange={form.handleChange}
           value={form.values.login}
-          placeholder="Login"
+          placeholder="Логин"
           type={'text'}
         />
         <CustomInput
           key={'sublogin'}
           id={'sublogin'}
-          placeholder="Sublogin"
+          placeholder="Саблогин"
           onChange={form.handleChange}
           value={form.values.sublogin}
           type={'text'}
@@ -111,7 +111,7 @@ const Login = () => {
           error={form.errors.password}
           onBlur={form.handleBlur}
           id={'password'}
-          placeholder="Password"
+          placeholder="Пароль"
           onChange={form.handleChange}
           value={form.values.password}
           type={'password'}

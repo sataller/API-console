@@ -17,7 +17,7 @@ const CustomInput = ({touched, onBlur, error, id, placeholder, onChange, value, 
     <>
       <Label error={Boolean(error && touched)} htmlFor={id}>
         {' '}
-        {touched && (error || placeholder)}
+        {(touched && error) || placeholder}
       </Label>
       <Input
         onBlur={onBlur}

@@ -27,8 +27,9 @@ export const Button = styled.button<{margin?: number; isError?: boolean}>`
   min-height: 40px;
   background: linear-gradient(180deg, #45a6ff 0%, #0055fb 100%), #c4c4c4;
   border-radius: 5px;
+  border: none;
   margin-top: ${(props) => (props.margin ? `${props.margin}px` : 0)};
-
+  color: white;
   &:disabled {
     ${(props) => props.isError && 'background:#c4c4c4'};
   }
