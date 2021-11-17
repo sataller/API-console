@@ -38,7 +38,7 @@ export const useResize = () => {
     let leftStartPosition = leftFieldE?.offsetWidth || 0;
     let rightStartPosition = rightFieldE?.offsetWidth || 0;
 
-    resizeElement.addEventListener('mouseup', (e) => {
+    document.addEventListener('mouseup', (e) => {
       e.stopPropagation();
       e.preventDefault();
       mouseDown = false;
@@ -55,7 +55,7 @@ export const useResize = () => {
     });
 
     return () => {
-      resizeElement.removeEventListener('mouseup', (e) => {
+      document.removeEventListener('mouseup', (e) => {
         e.stopPropagation();
         e.preventDefault();
         mouseDown = false;
