@@ -21,10 +21,11 @@ export type TabsPropsType = {
 };
 
 const tabWidth = 140;
+const tabMargin = 10;
 const closeButtonWidth = 50;
 
 const Tabs = ({userName, sendRequest, data, setViewText}: TabsPropsType) => {
-  const {scrollRef} = useScroll({data, tabWidth, closeButtonWidth});
+  const {scrollRef} = useScroll({data, tabWidth, tabMargin, closeButtonWidth});
   let tubsListE: JSX.Element[] = [];
 
   const convertRequest = (key: string) => {
@@ -42,6 +43,8 @@ const Tabs = ({userName, sendRequest, data, setViewText}: TabsPropsType) => {
     tubsListE = [
       ...tubsListE,
       <Tab
+        width={tabWidth}
+        margin={tabMargin}
         sendRequest={sendRequest}
         requestText={data?.dataList[key]?.request}
         responseText={data?.dataList[key]?.response}

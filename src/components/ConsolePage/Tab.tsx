@@ -14,11 +14,13 @@ type TabPropsType = {
   responseText: any;
   requestText: any;
   userName: string;
+  width: number;
+  margin: number;
   setViewText: (requestText: string, responseText: string) => void;
   sendRequest: (id?: string) => void;
 };
 
-const Tab = ({userName, sendRequest, responseText, requestText, id, isError, title, setViewText}: TabPropsType) => {
+const Tab = ({margin, width, userName, sendRequest, responseText, requestText, id, isError, title, setViewText}: TabPropsType) => {
   const dispatch = useAppDispatch();
   const [isVisibleSubMenu, setIsVisibleSubMenu] = React.useState(false);
   const [isVisibleToast, setIsVisibleToast] = React.useState(false);
@@ -64,13 +66,15 @@ const Tab = ({userName, sendRequest, responseText, requestText, id, isError, tit
 
   return (
     <TabBlock onClick={openTab} onMouseLeave={closeSubMenu}>
-      <TabWrapper>
+      <TabWrapper margin={margin} width={width}>
         <IndicatorIcon isError={isError} />
         {isVisibleToast && <Toast>{toastText}</Toast>}
         <Title>{title?.slice(0, 8) || 'no action'}</Title>
         {id !== '20' && <OptionsIcon src={optionsIcon} onClick={(e) => viewSubMenu(e)} />}
       </TabWrapper>
-      {isVisibleSubMenu && <SubMenu perform={perform} deleteTab={deleteTab} copy={(e) => copyResponse({e, id, viewToast, userName})} />}
+      {isVisibleSubMenu && (
+        <SubMenu margin={margin} perform={perform} deleteTab={deleteTab} copy={(e) => copyResponse({e, id, viewToast, userName})} />
+      )}
     </TabBlock>
   );
 };
@@ -114,19 +118,19 @@ const Toast = styled.div`
   }
 `;
 
-const TabWrapper = styled.div`
+const TabWrapper = styled.div<{width: number; margin: number}>`
   position: relative;
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
   padding: 5px 10px;
-  width: 120px;
+  width: ${(props) => props.width}px;
   height: 30px;
   background: #ffffff;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
   border-radius: 5px;
-  margin: 0 10px;
+  margin: 0 ${(props) => props.margin}px;
   overflow: hidden;
 `;
 

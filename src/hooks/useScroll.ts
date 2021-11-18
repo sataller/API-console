@@ -1,6 +1,16 @@
 import React from 'react';
 
-export const useScroll = ({data, tabWidth, closeButtonWidth}: {data: any; tabWidth: number; closeButtonWidth: number}) => {
+export const useScroll = ({
+  data,
+  tabWidth,
+  tabMargin,
+  closeButtonWidth,
+}: {
+  data: any;
+  tabWidth: number;
+  tabMargin: number;
+  closeButtonWidth: number;
+}) => {
   const scrollRef = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
@@ -11,11 +21,11 @@ export const useScroll = ({data, tabWidth, closeButtonWidth}: {data: any; tabWid
       element.addEventListener('wheel', (e) => {
         e.preventDefault();
         let visibleWidth = scrollRef?.current?.parentElement?.offsetWidth || 1;
-        let tabsWidth = tabWidth * length - visibleWidth + closeButtonWidth;
+        let tabsWidth = (tabWidth + tabMargin * 2) * length - visibleWidth + closeButtonWidth;
 
         elementPosition = elementPosition + e.deltaY;
 
-        if (tabWidth * length < visibleWidth - 30) {
+        if ((tabWidth + tabMargin * 2) * length < visibleWidth - 30) {
           return;
         }
         if (elementPosition <= 1 && -tabsWidth <= elementPosition) {
@@ -29,7 +39,7 @@ export const useScroll = ({data, tabWidth, closeButtonWidth}: {data: any; tabWid
         }
       });
     }
-  }, [closeButtonWidth, data, tabWidth]);
+  }, [closeButtonWidth, data, tabWidth, tabMargin]);
 
   return {
     scrollRef,
