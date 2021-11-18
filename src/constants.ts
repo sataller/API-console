@@ -1,4 +1,4 @@
-export enum Constants  {
+export enum Constants {
   Send = 'Отправить',
   Login = 'Войти',
   Logout = 'Выйти',
@@ -6,4 +6,5 @@ export enum Constants  {
   AppTitle = 'API-консолька',
   Copied = 'Скопировано',
   Error = 'Ошибка',
+  Optional = 'Опционально',
 }
