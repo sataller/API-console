@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
 export const Title = styled.h1`
   font-family: SF Pro Text;
@@ -46,7 +46,7 @@ export const Form = styled.form`
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   border-radius: 5px;
   padding: 40px 30px;
-  margin-top: 20px;
+  margin: 20px 0;
   @media (max-width: 550px) {
     width: 300px;
   }

@@ -11,6 +11,7 @@ import {asyncLoginAction} from '../../store/sags/asyncActions';
 import {useAppDispatch, useAppSelector} from '../../hooks/redux';
 import {setError} from '../../store/reducers/authReducer';
 import {Constants} from '../../constants';
+import LinkToGit from '../reusibleComponents/LinkToGit';
 
 export type FormikValuesType = {
   login: string;
@@ -124,6 +125,7 @@ const Login = () => {
           text={Constants.Login}
         />
       </Form>
+      <LinkToGit>@link-to-your-github</LinkToGit>
     </Wrapper>
   );
 };
