@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 
 export const Title = styled.h1`
-  font-family: SF Pro Text;
   font-style: normal;
   font-weight: normal;
   font-size: 24px;
@@ -13,7 +12,6 @@ export const Title = styled.h1`
 export const SubTitle = styled.h2`
   display: flex;
   align-items: center;
-  font-family: SF Pro Text;
   font-style: normal;
   font-weight: normal;
   font-size: 18px;
@@ -60,7 +58,6 @@ export const Error = styled.div`
   padding: 10px;
   margin-top: 20px;
   & span {
-    font-family: SF Pro Text;
     font-style: normal;
     font-weight: normal;
     font-size: 12px;
@@ -90,7 +87,6 @@ export const Error = styled.div`
 `;
 
 export const Label = styled.label<{error?: boolean}>`
-  font-family: SF Pro Text;
   font-style: normal;
   font-weight: normal;
   font-size: 16px;

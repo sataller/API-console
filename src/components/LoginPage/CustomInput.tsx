@@ -44,7 +44,6 @@ export default CustomInput;
 
 const Optional = styled.div`
   float: right;
-  font-family: SF Pro Text;
   font-style: normal;
   font-weight: normal;
   font-size: 12px;

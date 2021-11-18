@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-const LogoutButton = ({onLogoutClick, title}: {title: string, onLogoutClick: () => void}) => {
+const LogoutButton = ({onLogoutClick, title}: {title: string; onLogoutClick: () => void}) => {
   return (
     <LogoutButtonWrapper onClick={onLogoutClick}>
       {title}
@@ -37,7 +37,6 @@ const LogoutButtonWrapper = styled.button`
   background-color: unset;
   margin-left: 35px;
   padding: 4px;
-  font-family: SF Pro Text;
   font-style: normal;
   font-weight: normal;
   font-size: 16px;

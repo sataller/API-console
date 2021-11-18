@@ -93,7 +93,6 @@ const Toast = styled.div`
   height: 20px;
   background: #f6f6f6;
   border-radius: 5px;
-  font-family: SF Pro Text;
   font-style: normal;
   font-weight: normal;
   font-size: 12px;
@@ -133,7 +132,6 @@ const TabWrapper = styled.div`
 `;
 
 const Title = styled.h2`
-  font-family: SF Pro Text;
   font-style: normal;
   font-weight: normal;
   font-size: 16px;

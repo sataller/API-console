@@ -56,7 +56,6 @@ const FieldWrapper = styled.div<{maxHeight?: number}>`
 const Title = styled.h3<{error: boolean}>`
   height: 17px;
 
-  font-family: SF Pro Text;
   font-style: normal;
   font-weight: normal;
   font-size: 12px;

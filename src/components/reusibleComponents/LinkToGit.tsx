@@ -8,7 +8,6 @@ const LinkToGit = ({children}: {children: string}) => {
 export default LinkToGit;
 
 export const LinkToGitWrapper = styled.div`
-  font-family: SF Pro Text;
   font-style: normal;
   font-weight: normal;
   font-size: 16px;

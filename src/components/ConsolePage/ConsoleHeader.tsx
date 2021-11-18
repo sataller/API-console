@@ -64,7 +64,6 @@ const HeaderItem = styled.div`
 `;
 
 const Title = styled.h1`
-  font-family: SF Pro Text;
   font-style: normal;
   font-weight: normal;
   font-size: 20px;
