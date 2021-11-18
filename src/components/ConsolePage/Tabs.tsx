@@ -38,7 +38,6 @@ const Tabs = ({userName, sendRequest, data, setViewText}: TabsPropsType) => {
 
   for (let key in data?.dataList) {
     const request = convertRequest(key);
-    const title = key === '20' ? 'work tab' : request.action;
 
     tubsListE = [
       ...tubsListE,
@@ -50,7 +49,7 @@ const Tabs = ({userName, sendRequest, data, setViewText}: TabsPropsType) => {
         responseText={data?.dataList[key]?.response}
         setViewText={setViewText}
         id={key}
-        title={title}
+        title={request.action}
         isError={data?.dataList[key]?.status === Status.ERROR}
         key={key}
         userName={userName}

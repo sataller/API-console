@@ -9,18 +9,19 @@ import {asyncRequestAction, asyncUpdateRequestAction} from '../../store/sags/asy
 import {useAppDispatch, useAppSelector} from '../../hooks/redux';
 import * as requestAction from '../../store/reducers/requestReducer';
 import {Status} from '../../api/api';
-import {changeRequestText} from '../../store/reducers/requestReducer';
 
 const Console = () => {
-  const {requestError, data, isFetching, activeTab} = useAppSelector((state) => state.request);
+  const {data, isFetching, activeTab} = useAppSelector((state) => state.request);
   const {user} = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
   const fullScreeRef = React.useRef<HTMLDivElement>(null);
   const [isFullScreen, setIsFullScreen] = React.useState<boolean>(false);
   const [screenHeight, setScreenHeight] = React.useState(0);
   const [responseError, setResponseError] = React.useState<boolean>(false);
+  const [requestError, setRequestError] = React.useState<boolean>(false);
   const [requestText, setRequestText] = React.useState<string>('');
   const [responseText, setResponseText] = React.useState<string>('');
+  const [isValidRequest, setIsValidRequest] = React.useState<boolean>(true);
   const handle = useFullScreenHandle();
 
   const switchFullScreen = () => {
@@ -46,20 +47,25 @@ const Console = () => {
   }, [handle.active]);
 
   React.useEffect(() => {
-    const key = data?.dataList?.hasOwnProperty(activeTab) ? activeTab : '20';
+    const key = data?.dataList?.hasOwnProperty(activeTab) ? activeTab : '0';
     const status = data?.dataList[key]?.status === Status.ERROR;
+    const requestStatus = data?.dataList[key]?.requestStatus === Status.ERROR;
     setResponseError(status);
+    setRequestError(requestStatus);
     setResponseText(data?.dataList[key]?.response);
     const request = data?.dataList[key]?.request;
-    setRequestText(typeof request === 'string' ? request : JSON.stringify(request));
+    setRequestText(typeof request === 'string' ? request : JSON.stringify(request, null, 2));
   }, [responseError, requestError, data?.dataList, activeTab, data]);
 
   const formatJson = () => {
     try {
       const string = formatString(requestText);
       setRequestText(JSON.stringify(string, null, 2));
+      setIsValidRequest(true);
+      dispatch(requestAction.setRequestError({activeId: `${activeTab}`, isError: Status.OK}));
+      dispatch(requestAction.setRequestText({activeId: `${activeTab}`, text: JSON.stringify(string, null, 2)}));
     } catch (error) {
-      dispatch(requestAction.setRequestError(true));
+      dispatch(requestAction.setRequestError({activeId: `${activeTab}`, isError: Status.ERROR}));
     }
   };
 
@@ -86,13 +92,12 @@ const Console = () => {
     const isValid = validateJson();
     const activeId = id || `${activeTab}`;
 
-    if (isValid.isError) {
-      dispatch(requestAction.setRequestError(true));
-      dispatch(requestAction.setRequestText({activeId, text: isValid.formatText}));
+    if (isValid.isError || !isValidRequest) {
+      dispatch(requestAction.setRequestText({activeId, text: requestText}));
+      dispatch(requestAction.setRequestError({activeId, isError: Status.ERROR}));
       return;
     }
-
-    activeId !== `20`
+    id
       ? dispatch(
           asyncUpdateRequestAction({
             data: data?.dataList[activeId]?.request,
@@ -103,19 +108,9 @@ const Console = () => {
   };
 
   const onChangeRequestText = (text: string) => {
-    dispatch(requestAction.setRequestError(false));
+    setIsValidRequest(false);
+    dispatch(requestAction.setRequestError({activeId: `${activeTab}`, isError: Status.OK}));
     setRequestText(text);
-  };
-
-  const onBlur = (text: string) => {
-    let newText = text;
-    const isValid = validateJson();
-    if (isValid.isError) {
-      dispatch(requestAction.setRequestError(true));
-      dispatch(requestAction.setRequestText({activeId: `${activeTab}`, text: isValid.formatText}));
-      return;
-    }
-    dispatch(changeRequestText({id: `${activeTab}`, newText}));
   };
 
   const setViewText = (requestText: string, responseText: string) => {
@@ -128,7 +123,6 @@ const Console = () => {
         <ConsoleHeader setIsFullScreen={switchFullScreen} isFullScreen={isFullScreen} />
         <TabsBlock setViewText={setViewText} sendRequest={sendRequest} />
         <ConsoleFields
-          onBlur={onBlur}
           requestError={requestError}
           responseError={responseError}
           requestText={requestText}

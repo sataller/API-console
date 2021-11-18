@@ -69,8 +69,8 @@ const Tab = ({margin, width, userName, sendRequest, responseText, requestText, i
       <TabWrapper margin={margin} width={width}>
         <IndicatorIcon isError={isError} />
         {isVisibleToast && <Toast>{toastText}</Toast>}
-        <Title>{title?.slice(0, 8) || 'no action'}</Title>
-        {id !== '20' && <OptionsIcon src={optionsIcon} onClick={(e) => viewSubMenu(e)} />}
+        <Title>{title?.slice(0, 10) || 'no action'}</Title>
+        <OptionsIcon src={optionsIcon} onClick={(e) => viewSubMenu(e)} />
       </TabWrapper>
       {isVisibleSubMenu && (
         <SubMenu margin={margin} perform={perform} deleteTab={deleteTab} copy={(e) => copyResponse({e, id, viewToast, userName})} />
@@ -88,6 +88,8 @@ const TabBlock = styled.div`
 
 const OptionsIcon = styled.img`
   cursor: pointer;
+  height: 20px;
+  width: 4px;
 `;
 
 const Toast = styled.div`

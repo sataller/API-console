@@ -6,7 +6,7 @@ const ResponseField = ({json, error}: {json: any; error: boolean}) => {
     <ResponseFieldWrapper error={error}>
       <div>
         <pre>
-          <code>{JSON.stringify(json, null, 2)}</code>
+          <code>{json ? JSON.stringify(json, null, 2) : null}</code>
         </pre>
       </div>
     </ResponseFieldWrapper>
@@ -25,6 +25,7 @@ const ResponseFieldWrapper = styled.div<{width?: number; error?: boolean}>`
   padding: 10px;
   ${(props) => props.error && 'box-shadow: 0px 0px 5px rgba(207, 44, 0, 0.5);'};
   overflow: auto;
+
   & div > pre {
     margin: 0;
   }

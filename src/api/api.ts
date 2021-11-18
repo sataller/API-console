@@ -5,6 +5,12 @@ export type LoginPayloadType = {
   sublogin?: string;
   password: string;
 };
+export type RequestType = {
+  response: any;
+  request: any;
+  status: StatusType;
+  requestStatus: StatusType;
+};
 
 export type StatusType = Status.OK | Status.ERROR;
 
@@ -26,15 +32,29 @@ export const logIn = async (payload: LoginPayloadType): Promise<{data: any; stat
     return {data: error, status: Status.ERROR};
   }
 };
-export const request = async (payload: any): Promise<{data: {response: any; request: any; status: StatusType}}> => {
+export const request = async (payload: any): Promise<{data: RequestType}> => {
   const newPayload = typeof payload === 'string' ? JSON.parse(payload) : payload;
 
   try {
     const response = await sendsay.request(newPayload);
-    return {data: {response: response, request: newPayload, status: Status.OK}};
+    return {
+      data: {
+        response: response,
+        request: newPayload,
+        status: Status.OK,
+        requestStatus: Status.OK,
+      },
+    };
   } catch (error) {
     console.log(error);
-    return {data: {response: error, request: newPayload, status: Status.ERROR}};
+    return {
+      data: {
+        response: error,
+        request: newPayload,
+        status: Status.ERROR,
+        requestStatus: Status.OK,
+      },
+    };
   }
 };
 

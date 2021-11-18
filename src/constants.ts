@@ -7,4 +7,6 @@ export enum Constants {
   Copied = 'Скопировано',
   Error = 'Ошибка',
   Optional = 'Опционально',
+  Request = 'Запрос',
+  Response = 'Ответ',
 }

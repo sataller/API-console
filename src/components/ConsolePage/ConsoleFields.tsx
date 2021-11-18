@@ -4,6 +4,7 @@ import dotsIcon from '../../assets/icons/dots.svg';
 import RequestField from './RequestField';
 import ResponseField from './ResponseField';
 import {useResize} from '../../hooks/useResize';
+import {Constants} from '../../constants';
 
 const ConsoleFields = ({
   fieldHeight,
@@ -12,7 +13,6 @@ const ConsoleFields = ({
   requestError,
   responseError,
   responseText,
-  onBlur,
 }: {
   fieldHeight: number;
   requestText: string;
@@ -20,7 +20,6 @@ const ConsoleFields = ({
   requestError: boolean;
   responseError: boolean;
   onChangeValue: (text: string) => void;
-  onBlur: (text: string) => void;
 }) => {
   const {resizeDots, rightField, leftField} = useResize();
 
@@ -30,14 +29,14 @@ const ConsoleFields = ({
   return (
     <Wrapper height={fieldHeight}>
       <FieldWrapper maxHeight={fieldHeight * 0.95} ref={leftField}>
-        <Title error={requestError}>Request:</Title>
-        <RequestField onBlur={onBlur} value={requestText} onchange={onChangeText} error={requestError} />
+        <Title error={requestError}>{Constants.Request}:</Title>
+        <RequestField value={requestText} onchange={onChangeText} error={requestError} />
       </FieldWrapper>
       <div style={{display: 'flex'}} ref={resizeDots}>
         <ResizeIcon src={dotsIcon} />
       </div>
       <FieldWrapper maxHeight={fieldHeight * 0.95} ref={rightField}>
-        <Title error={responseError}>Response:</Title>
+        <Title error={responseError}>{Constants.Response}:</Title>
         <ResponseField json={responseText} error={responseError} />
       </FieldWrapper>
     </Wrapper>

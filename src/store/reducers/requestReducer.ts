@@ -21,14 +21,16 @@ export type DataItemType = {
   request: any;
   response: any;
   status: StatusType;
+  requestStatus: StatusType;
 };
 
 const newField = {
   request: {
     action: 'new field',
   },
-  response: {},
+  response: '',
   status: Status.OK,
+  requestStatus: Status.OK,
 };
 
 const initialState: StateType = {
@@ -36,7 +38,7 @@ const initialState: StateType = {
     dataList: {
       '20': newField,
     },
-    maxLength: 0,
+    maxLength: 20,
   },
   responseError: false,
   requestError: false,
@@ -56,11 +58,36 @@ const requestSlice = createSlice({
       return state;
     },
     addAction: (state, action: PayloadAction<{data: DataItemType}>) => {
-      const key = state.data.maxLength >= 19 ? 0 : state.data.maxLength;
       state.responseError = action.payload.data.status === Status.ERROR;
-      state.data.dataList[key] = action.payload.data;
-      state.activeTab = key;
-      state.data.maxLength = state.data.maxLength >= 19 ? 0 : key + 1;
+      if (state.data.maxLength > 0) {
+        let key = (state.data.maxLength = state.data.maxLength - 1);
+        state.data.dataList[key] = action.payload.data;
+        state.activeTab = key;
+      } else {
+        const lastKey = Object.keys(state.data.dataList).length - 1;
+        let data = JSON.parse(JSON.stringify(state.data.dataList));
+        console.log();
+        const newData: DataListType = {
+          '0': {
+            response: action.payload.data.response,
+            request: JSON.stringify(action.payload.data.request, null, 2),
+            status: action.payload.data.status,
+            requestStatus: Status.OK,
+          },
+        };
+        for (let key in data) {
+          if (+key !== lastKey) {
+            newData[+key + 1] = data[key];
+          }
+        }
+        state.data.dataList = newData;
+        state.activeTab = 0;
+      }
+      localStorage.setItem(`${state.userName}_Actions`, JSON.stringify(state));
+      return state;
+    },
+    updateAction: (state, action: PayloadAction<{id: string; data: {data: DataItemType}}>) => {
+      state.data.dataList[action.payload.id] = action.payload.data.data;
       localStorage.setItem(`${state.userName}_Actions`, JSON.stringify(state));
       return state;
     },
@@ -79,11 +106,6 @@ const requestSlice = createSlice({
       localStorage.setItem(`${state.userName}_Actions`, JSON.stringify(state));
       return state;
     },
-    updateAction: (state, action: PayloadAction<{id: string; data: {data: DataItemType}}>) => {
-      state.data.dataList[action.payload.id] = action.payload.data.data;
-      localStorage.setItem(`${state.userName}_Actions`, JSON.stringify(state));
-      return state;
-    },
     removeAllActions: (state) => {
       state.data.dataList = initialState.data.dataList;
       localStorage.setItem(`${state.userName}_Actions`, JSON.stringify(state));
@@ -93,8 +115,10 @@ const requestSlice = createSlice({
       state.activeTab = action.payload;
       return state;
     },
-    setRequestError: (state, action: PayloadAction<boolean>) => {
-      state.requestError = action.payload;
+    setRequestError: (state, action: PayloadAction<{activeId: string; isError: StatusType}>) => {
+      state.data.dataList[action.payload.activeId].requestStatus = action.payload.isError;
+      localStorage.setItem(`${state.userName}_Actions`, JSON.stringify(state));
+
       return state;
     },
     setRequestText: (state, action: PayloadAction<{activeId: string; text: string}>) => {
