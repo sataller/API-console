@@ -38,7 +38,7 @@ const ConsoleHeader = ({setIsFullScreen, isFullScreen}: ConsoleHeaderPropsType) 
         <Title>{Constants.AppTitle}</Title>
       </HeaderItem>
       <HeaderItem>
-        <UserInfo onChange={handleChange} value={value} />
+        <UserInfo onChange={handleChange} value={value} disabled />
         <LogoutButton title={Constants.Logout} onLogoutClick={onLogoutClick} />
         <FullScreenButton setIsFullScreen={setIsFullScreen} isFullScreen={isFullScreen} />
       </HeaderItem>

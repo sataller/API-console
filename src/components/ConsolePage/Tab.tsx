@@ -55,7 +55,6 @@ const Tab = ({userName, sendRequest, responseText, requestText, id, isError, tit
     openTab();
     await sendRequest(id);
     setIsVisibleSubMenu(false);
-    console.log('perform');
   };
 
   const openTab = () => {

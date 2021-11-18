@@ -15,7 +15,6 @@ type InputType = {
 };
 
 const CustomInput = ({touched, onBlur, error, id, placeholder, onChange, value, type}: InputType) => {
-  console.log(touched, error, id);
   return (
     <>
       <Label error={Boolean(error && touched)} htmlFor={id}>

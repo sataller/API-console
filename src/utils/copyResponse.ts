@@ -15,7 +15,6 @@ export const copyResponse = ({e, id, viewToast, userName}: CopyResponseType) => 
     navigator?.clipboard
       .writeText(JSON.stringify(JSON.parse(data).data.dataList[id].request))
       .then(() => {
-        console.log('copied');
         viewToast(Constants.Copied);
       })
       .catch((err) => {
