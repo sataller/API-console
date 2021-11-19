@@ -108,7 +108,6 @@ const requestSlice = createSlice({
     },
     setActiveTub: (state, action: PayloadAction<number>) => {
       const activeTab = action.payload ? action.payload : null;
-      console.log(action.payload);
       if (!activeTab) return;
       state.activeTab = activeTab;
       state.isRequestError = state.data.dataList[activeTab].requestStatus === Status.ERROR;

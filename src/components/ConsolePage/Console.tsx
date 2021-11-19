@@ -112,7 +112,6 @@ const Console = () => {
 
   const onChangeRequestText = (text: string) => {
     setIsValidRequest(false);
-    dispatch(requestAction.setRequestError({activeId: `${activeTab}`, isError: Status.ERROR}));
     setRequestText(text);
   };
 
@@ -127,6 +126,7 @@ const Console = () => {
   const onBlurHandler = (requestText: string) => {
     setRequestText(requestText);
     setRequestError(true);
+    dispatch(requestAction.setRequestError({activeId: `${activeTab}`, isError: Status.ERROR}));
     dispatch(requestAction.setRequestText({text: requestText}));
   };
 
