@@ -9,7 +9,7 @@ import {asyncRequestAction, asyncUpdateRequestAction} from '../../store/sags/asy
 import {useAppDispatch, useAppSelector} from '../../hooks/redux';
 import * as requestAction from '../../store/reducers/requestReducer';
 import {Status} from '../../api/api';
-import {setActiveTub} from '../../store/reducers/requestReducer';
+import {removeAllRequests, setActiveTub} from '../../store/reducers/requestReducer';
 import * as validation from '../../utils/validation';
 
 const Console = () => {
@@ -48,7 +48,7 @@ const Console = () => {
   }, [handle.active]);
 
   React.useEffect(() => {
-    setRequestText(newRequestText);
+    setRequestText(typeof newRequestText === 'string' ? newRequestText : JSON.stringify(newRequestText, null, 2));
     if (!activeTab && activeTab !== 0) return;
 
     const key = data?.dataList?.hasOwnProperty(activeTab) ? activeTab : '0';
@@ -112,6 +112,14 @@ const Console = () => {
     setRequestText(text);
   };
 
+  const removeAllTubs = () => {
+    dispatch(removeAllRequests());
+    setRequestText('');
+    setRequestError(false);
+    setResponseError(false);
+    setResponseText('');
+  };
+
   const setViewText = (requestText: string, responseText: string, id: number) => {
     dispatch(setActiveTub(id));
     setRequestError(false);
@@ -138,7 +146,7 @@ const Console = () => {
     <FullScreen handle={handle}>
       <Wrapper height={screenHeight} ref={fullScreeRef}>
         <ConsoleHeader setIsFullScreen={switchFullScreen} isFullScreen={isFullScreen} />
-        <TabsBlock setViewText={setViewText} sendRequest={sendRequest} />
+        <TabsBlock removeAllTubs={removeAllTubs} setViewText={setViewText} sendRequest={sendRequest} />
         <ConsoleFields
           onBlurHandler={onBlurHandler}
           requestError={requestError}

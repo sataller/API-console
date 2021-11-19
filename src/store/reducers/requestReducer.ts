@@ -103,7 +103,7 @@ const requestSlice = createSlice({
       return state;
     },
     removeAllActions: (state) => {
-      state.data.dataList = initialState.data.dataList;
+      state.data = initialState.data;
       state.newRequestText = '';
       localStorage.setItem(`${state.userName}_Actions`, JSON.stringify(state));
       return state;

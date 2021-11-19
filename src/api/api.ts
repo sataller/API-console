@@ -23,7 +23,6 @@ export const logIn = async (payload: LoginPayloadType): Promise<{data: any; stat
   sendsay.auth = {...payload};
   localStorage.removeItem('token');
   localStorage.removeItem('user');
-  localStorage.removeItem('astaller96@gmail.com_Actions');
 
   try {
     await sendsay.login(payload);

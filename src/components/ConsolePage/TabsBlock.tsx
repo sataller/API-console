@@ -2,21 +2,16 @@ import React from 'react';
 import styled from 'styled-components';
 import CloseButton from './CloseButton';
 import Tabs from './Tabs';
-import {useAppDispatch, useAppSelector} from '../../hooks/redux';
-import {removeAllRequests} from '../../store/reducers/requestReducer';
+import {useAppSelector} from '../../hooks/redux';
 
 type TabsBlockType = {
   setViewText: (requestText: string, responseText: string, id: number) => void;
   sendRequest: () => void;
+  removeAllTubs: () => void;
 };
 
-const TabsBlock = ({sendRequest, setViewText}: TabsBlockType) => {
+const TabsBlock = ({removeAllTubs, sendRequest, setViewText}: TabsBlockType) => {
   const {data, userName} = useAppSelector((state) => state.request);
-  const dispatch = useAppDispatch();
-
-  const removeAllTubs = () => {
-    dispatch(removeAllRequests());
-  };
 
   return (
     <Wrapper>
