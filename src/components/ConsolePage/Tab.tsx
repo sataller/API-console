@@ -48,7 +48,8 @@ const Tab = ({margin, width, userName, sendRequest, responseText, requestText, i
     }
   };
 
-  const deleteTab = () => {
+  const deleteTab = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    e.stopPropagation();
     dispatch(removeAction({id}));
     setIsVisibleSubMenu(false);
   };

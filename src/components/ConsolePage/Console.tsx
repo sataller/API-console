@@ -12,7 +12,7 @@ import {Status} from '../../api/api';
 import {setActiveTub} from '../../store/reducers/requestReducer';
 
 const Console = () => {
-  const {newRequestText, isRequestError, data, isFetching, activeTab} = useAppSelector((state) => state.request);
+  const {newRequestText, data, isFetching, activeTab} = useAppSelector((state) => state.request);
   const {user} = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
   const fullScreeRef = React.useRef<HTMLDivElement>(null);
@@ -49,7 +49,6 @@ const Console = () => {
 
   React.useEffect(() => {
     setRequestText(newRequestText);
-    setRequestError(isRequestError);
 
     if (!activeTab) return;
 
@@ -59,13 +58,14 @@ const Console = () => {
     setResponseError(status);
     setRequestError(requestStatus);
     setResponseText(data?.dataList[key]?.response);
-  }, [isRequestError, newRequestText, responseError, data?.dataList, activeTab, data]);
+  }, [newRequestText, responseError, data?.dataList, activeTab, data]);
 
   const formatJson = () => {
     try {
       const string = formatString(requestText);
       setRequestText(JSON.stringify(string, null, 2));
       setIsValidRequest(true);
+      setRequestError(false);
       dispatch(requestAction.setRequestError({activeId: `${activeTab}`, isError: Status.OK}));
       dispatch(requestAction.setRequestText({activeId: `${activeTab}`, text: JSON.stringify(string, null, 2)}));
     } catch (error) {
@@ -126,6 +126,7 @@ const Console = () => {
 
   const onBlurHandler = (requestText: string) => {
     setRequestText(requestText);
+    setRequestError(true);
     dispatch(requestAction.setRequestText({text: requestText}));
   };
 

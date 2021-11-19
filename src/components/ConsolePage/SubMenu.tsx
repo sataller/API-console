@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 type SubMenuPropsType = {
   copy: (e: React.MouseEvent<HTMLImageElement, MouseEvent>) => void;
-  deleteTab: () => void;
+  deleteTab: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
   perform: () => void;
   margin: number;
 };
@@ -18,7 +18,7 @@ const SubMenu = ({margin, copy, deleteTab, perform}: SubMenuPropsType) => {
         Скопировать
       </SubMenuOption>
       <SubMenuOptionHr />
-      <SubMenuOption onClick={deleteTab}>Удалить</SubMenuOption>
+      <SubMenuOption onClick={(e) => deleteTab(e)}>Удалить</SubMenuOption>
     </SubMenuWrapper>
   );
 };
