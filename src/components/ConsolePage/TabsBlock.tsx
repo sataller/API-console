@@ -6,7 +6,7 @@ import {useAppDispatch, useAppSelector} from '../../hooks/redux';
 import {removeAllRequests} from '../../store/reducers/requestReducer';
 
 type TabsBlockType = {
-  setViewText: (requestText: string, responseText: string) => void;
+  setViewText: (requestText: string, responseText: string, id: number) => void;
   sendRequest: () => void;
 };
 

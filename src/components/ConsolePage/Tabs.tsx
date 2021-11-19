@@ -15,7 +15,7 @@ export type TabsPropsType = {
     };
     maxLength: number;
   };
-  setViewText: (requestText: string, responseText: string) => void;
+  setViewText: (requestText: string, responseText: string, id: number) => void;
   sendRequest: () => void;
   userName: string;
 };

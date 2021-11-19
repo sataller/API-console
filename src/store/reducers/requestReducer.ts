@@ -7,10 +7,11 @@ type StateType = {
     maxLength: number;
   };
   responseError: boolean;
-  requestError: boolean;
+  isRequestError: boolean;
   isFetching: boolean;
-  activeTab: number;
+  activeTab: number | null;
   userName: string;
+  newRequestText: string;
 };
 
 type DataListType = {
@@ -24,27 +25,17 @@ export type DataItemType = {
   requestStatus: StatusType;
 };
 
-const newField = {
-  request: {
-    action: 'new field',
-  },
-  response: '',
-  status: Status.OK,
-  requestStatus: Status.OK,
-};
-
 const initialState: StateType = {
   data: {
-    dataList: {
-      '20': newField,
-    },
+    dataList: {},
     maxLength: 20,
   },
   responseError: false,
-  requestError: false,
+  isRequestError: false,
   isFetching: false,
-  activeTab: 20,
+  activeTab: null,
   userName: '',
+  newRequestText: '',
 };
 
 const requestSlice = createSlice({
@@ -54,26 +45,30 @@ const requestSlice = createSlice({
     initActions: (state, action: PayloadAction<{userName: string}>) => {
       const actions = localStorage.getItem(`${action.payload.userName}_Actions`);
       state.userName = action.payload.userName;
-      state.data = actions ? JSON.parse(actions).data : initialState.data;
+      state.data = initialState.data;
+      if (!actions) return;
+      const parsActions = JSON.parse(actions);
+      state.newRequestText = parsActions.newRequestText;
+      state.data = parsActions.data;
       return state;
     },
     addAction: (state, action: PayloadAction<{data: DataItemType}>) => {
       state.responseError = action.payload.data.status === Status.ERROR;
+      const newAction = {
+        response: action.payload.data.response,
+        request: JSON.stringify(action.payload.data.request, null, 2),
+        status: action.payload.data.status,
+        requestStatus: Status.OK,
+      };
       if (state.data.maxLength > 0) {
         let key = (state.data.maxLength = state.data.maxLength - 1);
-        state.data.dataList[key] = action.payload.data;
+        state.data.dataList[key] = newAction;
         state.activeTab = key;
       } else {
         const lastKey = Object.keys(state.data.dataList).length - 1;
         let data = JSON.parse(JSON.stringify(state.data.dataList));
-        console.log();
         const newData: DataListType = {
-          '0': {
-            response: action.payload.data.response,
-            request: JSON.stringify(action.payload.data.request, null, 2),
-            status: action.payload.data.status,
-            requestStatus: Status.OK,
-          },
+          '0': newAction,
         };
         for (let key in data) {
           if (+key !== lastKey) {
@@ -113,16 +108,20 @@ const requestSlice = createSlice({
     },
     setActiveTub: (state, action: PayloadAction<number>) => {
       state.activeTab = action.payload;
+      state.isRequestError = state.data.dataList[action.payload].requestStatus === Status.ERROR;
+
       return state;
     },
     setRequestError: (state, action: PayloadAction<{activeId: string; isError: StatusType}>) => {
+      state.isRequestError = action.payload.isError === Status.ERROR;
+      if (!+action.payload.activeId) return;
       state.data.dataList[action.payload.activeId].requestStatus = action.payload.isError;
       localStorage.setItem(`${state.userName}_Actions`, JSON.stringify(state));
 
       return state;
     },
-    setRequestText: (state, action: PayloadAction<{activeId: string; text: string}>) => {
-      state.data.dataList[action.payload.activeId].request = action.payload.text;
+    setRequestText: (state, action: PayloadAction<{activeId?: string; text: string}>) => {
+      state.newRequestText = action.payload.text;
       localStorage.setItem(`${state.userName}_Actions`, JSON.stringify(state));
       return state;
     },

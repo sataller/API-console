@@ -5,7 +5,7 @@ import optionsIcon from '../../assets/icons/dots.svg';
 import SubMenu from './SubMenu';
 import {copyResponse} from '../../utils/copyResponse';
 import {useAppDispatch} from '../../hooks/redux';
-import {removeAction, setActiveTub} from '../../store/reducers/requestReducer';
+import {removeAction} from '../../store/reducers/requestReducer';
 
 type TabPropsType = {
   id: string;
@@ -16,7 +16,7 @@ type TabPropsType = {
   userName: string;
   width: number;
   margin: number;
-  setViewText: (requestText: string, responseText: string) => void;
+  setViewText: (requestText: string, responseText: string, id: number) => void;
   sendRequest: (id?: string) => void;
 };
 
@@ -60,8 +60,7 @@ const Tab = ({margin, width, userName, sendRequest, responseText, requestText, i
   };
 
   const openTab = () => {
-    dispatch(setActiveTub(+id));
-    setViewText(typeof requestText === 'string' ? requestText : JSON.stringify(requestText), responseText);
+    setViewText(typeof requestText === 'string' ? requestText : JSON.stringify(requestText, null, 2), responseText, +id);
   };
 
   return (
