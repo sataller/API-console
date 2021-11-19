@@ -109,7 +109,6 @@ const requestSlice = createSlice({
     setActiveTub: (state, action: PayloadAction<number>) => {
       state.activeTab = action.payload;
       state.isRequestError = state.data.dataList[action.payload].requestStatus === Status.ERROR;
-
       return state;
     },
     setRequestError: (state, action: PayloadAction<{activeId: string; isError: StatusType}>) => {
@@ -117,7 +116,6 @@ const requestSlice = createSlice({
       if (!+action.payload.activeId) return;
       state.data.dataList[action.payload.activeId].requestStatus = action.payload.isError;
       localStorage.setItem(`${state.userName}_Actions`, JSON.stringify(state));
-
       return state;
     },
     setRequestText: (state, action: PayloadAction<{activeId?: string; text: string}>) => {

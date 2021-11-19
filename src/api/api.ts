@@ -68,6 +68,7 @@ export const isAuth = async () => {
     };
   } catch (error) {
     console.log(error);
+    sendsay.session = undefined;
     return {
       isAuth: false,
     };

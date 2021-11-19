@@ -1,5 +1,6 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 import * as api from '../../api/api';
+import {sendsay} from '../../initSendsay';
 
 type StateType = {
   token: string;
@@ -30,8 +31,6 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     login: (state, action: PayloadAction<{data: {data: any; status: api.StatusType}}>) => {
-      state.user.login = action.payload.data.data.login;
-      state.user.sublogin = action.payload.data.data.sublogin;
       state.token = action.payload.data.data.token;
       state.isAuth = true;
       return state;
@@ -55,6 +54,7 @@ const authSlice = createSlice({
       state.user.login = '';
       state.user.sublogin = '';
       state.isAuth = false;
+      sendsay.session = undefined;
       localStorage.removeItem('user');
       localStorage.removeItem('token');
       return state;

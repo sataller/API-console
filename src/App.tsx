@@ -11,13 +11,20 @@ const App = () => {
   const dispatch = useAppDispatch();
 
   React.useEffect(() => {
+    if (!isAuth) {
+      localStorage.removeItem('user');
+      localStorage.removeItem('token');
+      sendsay.session = undefined;
+      return;
+    }
+
     let userLocal = localStorage.getItem('user');
     let userToken = localStorage.getItem('token');
 
     if (!userLocal && !userToken) return;
     sendsay.session = sendsay.session || userToken;
     dispatch(asyncIsAuthAction());
-  }, [dispatch]);
+  }, [isAuth, dispatch]);
 
   return (
     <div>

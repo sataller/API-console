@@ -50,6 +50,7 @@ const Console = () => {
   React.useEffect(() => {
     setRequestText(newRequestText);
     setRequestError(isRequestError);
+
     if (!activeTab) return;
 
     const key = data?.dataList?.hasOwnProperty(activeTab) ? activeTab : '0';
@@ -58,7 +59,7 @@ const Console = () => {
     setResponseError(status);
     setRequestError(requestStatus);
     setResponseText(data?.dataList[key]?.response);
-  }, [newRequestText, responseError, requestError, data?.dataList, activeTab, data]);
+  }, [isRequestError, newRequestText, responseError, data?.dataList, activeTab, data]);
 
   const formatJson = () => {
     try {
