@@ -49,8 +49,7 @@ const Console = () => {
 
   React.useEffect(() => {
     setRequestText(newRequestText);
-
-    if (!activeTab) return;
+    if (!activeTab && activeTab !== 0) return;
 
     const key = data?.dataList?.hasOwnProperty(activeTab) ? activeTab : '0';
     const status = data?.dataList[key]?.status === Status.ERROR;
@@ -58,6 +57,7 @@ const Console = () => {
     setResponseError(status);
     setRequestError(requestStatus);
     setResponseText(data?.dataList[key]?.response);
+    setRequestText(newRequestText || data?.dataList[key]?.request);
   }, [newRequestText, responseError, data?.dataList, activeTab, data]);
 
   const formatJson = () => {
@@ -90,7 +90,6 @@ const Console = () => {
   };
 
   const sendRequest = (id?: string) => {
-    debugger;
     setResponseError(false);
     const isValid = validateJson();
     const activeId = id || `${activeTab}`;
@@ -122,7 +121,9 @@ const Console = () => {
   };
 
   const onBlurHandler = (requestText: string) => {
-    console.log(requestText);
+    setRequestText(requestText);
+    dispatch(requestAction.setRequestText({text: requestText}));
+    dispatch(requestAction.setActiveTub(null));
     const isValid = validation.validateJson(requestText);
     setRequestError(false);
     if (!isValid) {
@@ -131,8 +132,6 @@ const Console = () => {
     } else {
       dispatch(requestAction.setRequestError({activeId: `${activeTab}`, isError: Status.OK}));
     }
-    setRequestText(requestText);
-    dispatch(requestAction.setRequestText({text: requestText}));
   };
 
   return (

@@ -96,17 +96,19 @@ const requestSlice = createSlice({
       };
       delete newData[action.payload.id];
       state.data.dataList = newData;
-      state.activeTab = null;
-      state.data.maxLength = state.data.maxLength - 1;
+      state.newRequestText = state.data.dataList[Object.keys(newData)[0]].request;
+      state.activeTab = +Object.keys(newData)[0];
+      state.data.maxLength = state.data.maxLength <= 0 ? 0 : state.data.maxLength - 1;
       localStorage.setItem(`${state.userName}_Actions`, JSON.stringify(state));
       return state;
     },
     removeAllActions: (state) => {
       state.data.dataList = initialState.data.dataList;
+      state.newRequestText = '';
       localStorage.setItem(`${state.userName}_Actions`, JSON.stringify(state));
       return state;
     },
-    setActiveTub: (state, action: PayloadAction<number>) => {
+    setActiveTub: (state, action: PayloadAction<number | null>) => {
       const activeTab = action.payload ? action.payload : null;
       if (!activeTab) return;
       state.activeTab = activeTab;
