@@ -31,3 +31,10 @@ export const validateLogin = (login: string) => {
   }
   return error;
 };
+
+export const validateJson = (json: string) => {
+  // const test = '{\n  "action": "ping"\n}';
+  const reg = /{\n\s\s"/;
+  const reg2 = /"\n}/;
+  return reg.test(json) && reg2.test(json);
+};

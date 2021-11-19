@@ -10,6 +10,7 @@ import {useAppDispatch, useAppSelector} from '../../hooks/redux';
 import * as requestAction from '../../store/reducers/requestReducer';
 import {Status} from '../../api/api';
 import {setActiveTub} from '../../store/reducers/requestReducer';
+import * as validation from '../../utils/validation';
 
 const Console = () => {
   const {newRequestText, data, isFetching, activeTab} = useAppSelector((state) => state.request);
@@ -22,7 +23,6 @@ const Console = () => {
   const [requestError, setRequestError] = React.useState<boolean>(false);
   const [requestText, setRequestText] = React.useState<string>(newRequestText);
   const [responseText, setResponseText] = React.useState<string>('');
-  const [isValidRequest, setIsValidRequest] = React.useState<boolean>(false);
   const handle = useFullScreenHandle();
 
   const switchFullScreen = () => {
@@ -64,7 +64,6 @@ const Console = () => {
     try {
       const string = formatString(requestText);
       setRequestText(JSON.stringify(string, null, 2));
-      setIsValidRequest(true);
       setRequestError(false);
       dispatch(requestAction.setRequestError({activeId: `${activeTab}`, isError: Status.OK}));
       dispatch(requestAction.setRequestText({activeId: `${activeTab}`, text: JSON.stringify(string, null, 2)}));
@@ -81,7 +80,6 @@ const Console = () => {
   const replaceString = (text: string) => {
     return text.replace(/\s+/g, ' ');
   };
-
   const validateJson = (text?: string) => {
     try {
       const formatText = formatString(text || requestText);
@@ -92,10 +90,11 @@ const Console = () => {
   };
 
   const sendRequest = (id?: string) => {
+    debugger;
     setResponseError(false);
     const isValid = validateJson();
     const activeId = id || `${activeTab}`;
-    if (isValid.isError || !isValidRequest) {
+    if (isValid.isError || requestError) {
       dispatch(requestAction.setRequestText({activeId, text: requestText}));
       dispatch(requestAction.setRequestError({activeId, isError: Status.ERROR}));
       return;
@@ -111,7 +110,6 @@ const Console = () => {
   };
 
   const onChangeRequestText = (text: string) => {
-    setIsValidRequest(false);
     setRequestText(text);
   };
 
@@ -124,9 +122,16 @@ const Console = () => {
   };
 
   const onBlurHandler = (requestText: string) => {
+    console.log(requestText);
+    const isValid = validation.validateJson(requestText);
+    setRequestError(false);
+    if (!isValid) {
+      setRequestError(true);
+      dispatch(requestAction.setRequestError({activeId: `${activeTab}`, isError: Status.ERROR}));
+    } else {
+      dispatch(requestAction.setRequestError({activeId: `${activeTab}`, isError: Status.OK}));
+    }
     setRequestText(requestText);
-    setRequestError(true);
-    dispatch(requestAction.setRequestError({activeId: `${activeTab}`, isError: Status.ERROR}));
     dispatch(requestAction.setRequestText({text: requestText}));
   };
 
