@@ -13,7 +13,7 @@ export const copyResponse = ({e, id, viewToast, userName}: CopyResponseType) => 
   let data = localStorage.getItem(`${userName}_Actions`);
   if (data) {
     navigator?.clipboard
-      .writeText(JSON.stringify(JSON.parse(data).data.dataList[id].request))
+      .writeText(JSON.parse(data).data.dataList[id].request)
       .then(() => {
         viewToast(Constants.Copied);
       })
