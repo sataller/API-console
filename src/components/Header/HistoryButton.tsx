@@ -35,7 +35,7 @@ const HistoryButtonWrapper = styled.button`
   cursor: pointer;
   border: none;
   background-color: unset;
-  margin-left: 35px;
+  margin-right: 35px;
   padding: 4px;
   font-style: normal;
   font-weight: normal;

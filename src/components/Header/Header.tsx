@@ -1,24 +1,31 @@
 import React, {Dispatch, SetStateAction, useState} from 'react';
 import Logo from '../reusibleComponents/Logo';
 import LogoutButton from '../reusibleComponents/LogoutButton';
-import {FullScreenButton} from '../reusibleComponents/FullScreanButton';
+import {FullScreenButton} from './FullScreanButton';
 import styled from 'styled-components';
 import {useHistory} from 'react-router-dom';
 import {useAppDispatch, useAppSelector} from '../../hooks/redux';
 import {logout} from '../../store/reducers/authReducer';
 import {Constants} from '../../constants';
 import HistoryButton from './HistoryButton';
+import GoBackButton from './GoBackButton';
+import {PathName} from '../MainPageWrapper/MainPageWrapper';
 
 export type ConsoleHeaderPropsType = {
   setIsFullScreen: Dispatch<SetStateAction<boolean>>;
   isFullScreen: boolean;
 };
 
-const ConsoleHeader = ({setIsFullScreen, isFullScreen}: ConsoleHeaderPropsType) => {
+const Header = ({setIsFullScreen, isFullScreen}: ConsoleHeaderPropsType) => {
   const dispatch = useAppDispatch();
   const {user} = useAppSelector((state) => state.auth);
   const [value, setValue] = useState('iamyourlogin@domain.xyz : Sublogin');
+  const [pathName, setPathName] = React.useState<string>(PathName.console);
   const history = useHistory();
+
+  React.useEffect(() => {
+    setPathName(history.location.pathname);
+  }, [history.location.pathname]);
 
   React.useEffect(() => {
     setValue(`${user.login} ${user.sublogin ? `: ${user.sublogin}` : ''}`);
@@ -33,29 +40,37 @@ const ConsoleHeader = ({setIsFullScreen, isFullScreen}: ConsoleHeaderPropsType) 
     history.push(`/history`);
   };
 
+  const goBackClick = () => {
+    history.push(`/console`);
+  };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValue(e.target.value);
   };
 
   return (
-    <Header>
+    <HeaderWrapper>
       <HeaderItem>
         <Logo />
         <Title>{Constants.AppTitle}</Title>
       </HeaderItem>
       <HeaderItem>
+        {pathName === PathName.console ? (
+          <HistoryButton onClick={onHistoryClick} title={Constants.History} />
+        ) : (
+          <GoBackButton onClick={goBackClick} title={Constants.GoBack} />
+        )}
         <UserInfo onChange={handleChange} value={value} disabled />
-        <HistoryButton onClick={onHistoryClick} title={Constants.History} />
         <LogoutButton title={Constants.Logout} onLogoutClick={onLogoutClick} />
         <FullScreenButton setIsFullScreen={setIsFullScreen} isFullScreen={isFullScreen} />
       </HeaderItem>
-    </Header>
+    </HeaderWrapper>
   );
 };
 
-export default ConsoleHeader;
+export default Header;
 
-const Header = styled.div`
+const HeaderWrapper = styled.div`
   padding: 10px 15px;
   height: 50px;
   width: 100%;

@@ -10,4 +10,5 @@ export enum Constants {
   Request = 'Запрос',
   Response = 'Ответ',
   History = 'История',
+  GoBack = 'Вернуться',
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import {ConsoleHeaderPropsType} from '../ConsolePage/ConsoleHeader';
+import {ConsoleHeaderPropsType} from './Header';
 
 export const FullScreenButton = ({setIsFullScreen, isFullScreen}: ConsoleHeaderPropsType) => {
   return (

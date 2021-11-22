@@ -1,11 +1,10 @@
 import React from 'react';
 import Login from './components/LoginPage/Login';
-import Console from './components/ConsolePage/Console';
 import {sendsay} from './initSendsay';
 import {BrowserRouter, Redirect, Route, Switch} from 'react-router-dom';
 import {useAppDispatch, useAppSelector} from './hooks/redux';
 import {asyncIsAuthAction} from './store/sags/asyncActions';
-import History from './components/HistoryPage/History';
+import MainPageWrapper from './components/MainPageWrapper/MainPageWrapper';
 
 const App = () => {
   const {isAuth} = useAppSelector((state) => state.auth);
@@ -33,8 +32,8 @@ const App = () => {
         <Switch>
           <Route exact path="/" render={() => (isAuth ? <Redirect to="/console" /> : <Login />)} />
           <Route exact path="/login" render={() => (!isAuth ? <Login /> : <Redirect to="/console" />)} />
-          <Route exact path="/console" render={() => (isAuth ? <Console /> : <Redirect to="/login" />)} />
-          <Route exact path="/history" render={() => (isAuth ? <History /> : <Redirect to="/login" />)} />
+          <Route exact path="/console" render={() => (isAuth ? <MainPageWrapper /> : <Redirect to="/login" />)} />
+          <Route exact path="/history" render={() => (isAuth ? <MainPageWrapper /> : <Redirect to="/login" />)} />
         </Switch>
       </BrowserRouter>
     </div>
