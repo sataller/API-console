@@ -7,6 +7,7 @@ import {useHistory} from 'react-router-dom';
 import {useAppDispatch, useAppSelector} from '../../hooks/redux';
 import {logout} from '../../store/reducers/authReducer';
 import {Constants} from '../../constants';
+import HistoryButton from './HistoryButton';
 
 export type ConsoleHeaderPropsType = {
   setIsFullScreen: Dispatch<SetStateAction<boolean>>;
@@ -27,6 +28,11 @@ const ConsoleHeader = ({setIsFullScreen, isFullScreen}: ConsoleHeaderPropsType) 
     history.push(`/login`);
     dispatch(logout());
   };
+
+  const onHistoryClick = () => {
+    history.push(`/history`);
+  };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValue(e.target.value);
   };
@@ -39,6 +45,7 @@ const ConsoleHeader = ({setIsFullScreen, isFullScreen}: ConsoleHeaderPropsType) 
       </HeaderItem>
       <HeaderItem>
         <UserInfo onChange={handleChange} value={value} disabled />
+        <HistoryButton onClick={onHistoryClick} title={Constants.History} />
         <LogoutButton title={Constants.Logout} onLogoutClick={onLogoutClick} />
         <FullScreenButton setIsFullScreen={setIsFullScreen} isFullScreen={isFullScreen} />
       </HeaderItem>
