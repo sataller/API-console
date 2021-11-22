@@ -1,7 +1,12 @@
 import React from 'react';
+import ActionsTable from './ActionsTable';
 
 const History = () => {
-  return <div>ajdgjagfj</div>;
+  return (
+    <div>
+      <ActionsTable />
+    </div>
+  );
 };
 
 export default History;
