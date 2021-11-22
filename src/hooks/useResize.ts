@@ -6,9 +6,24 @@ export const useResize = () => {
   const leftField = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
+    const rightFieldE = rightField.current;
+    const leftFieldE = leftField.current;
+
+    const lWidth = localStorage.getItem('leftFieldWidth');
+    const rWidth = localStorage.getItem('rightFieldWidth');
+
+    if (!rightFieldE || !leftFieldE || lWidth || rWidth) return;
+    rightFieldE.style.width = `${leftFieldE.clientWidth}`;
+    leftFieldE.style.width = `${rightFieldE.clientWidth}`;
+    localStorage.setItem('leftFieldWidth', `${leftFieldE.clientWidth}`);
+    localStorage.setItem('rightFieldWidth', `${rightFieldE.clientWidth}`);
+  }, []);
+
+  React.useEffect(() => {
     const resizeElement = resizeDots.current;
     const rightFieldE = rightField.current;
     const leftFieldE = leftField.current;
+
     if (!rightFieldE || !leftFieldE || !resizeElement) {
       return;
     }
@@ -23,7 +38,7 @@ export const useResize = () => {
     let leftStartPosition = leftFieldE?.offsetWidth || 0;
     let rightStartPosition = rightFieldE?.offsetWidth || 0;
 
-    resizeElement.addEventListener('mouseup', (e) => {
+    document.addEventListener('mouseup', (e) => {
       e.stopPropagation();
       e.preventDefault();
       mouseDown = false;
@@ -40,7 +55,7 @@ export const useResize = () => {
     });
 
     return () => {
-      resizeElement.removeEventListener('mouseup', (e) => {
+      document.removeEventListener('mouseup', (e) => {
         e.stopPropagation();
         e.preventDefault();
         mouseDown = false;

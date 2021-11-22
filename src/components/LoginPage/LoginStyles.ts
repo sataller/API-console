@@ -1,7 +1,6 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
 export const Title = styled.h1`
-  font-family: SF Pro Text;
   font-style: normal;
   font-weight: normal;
   font-size: 24px;
@@ -13,7 +12,6 @@ export const Title = styled.h1`
 export const SubTitle = styled.h2`
   display: flex;
   align-items: center;
-  font-family: SF Pro Text;
   font-style: normal;
   font-weight: normal;
   font-size: 18px;
@@ -46,7 +44,7 @@ export const Form = styled.form`
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   border-radius: 5px;
   padding: 40px 30px;
-  margin-top: 20px;
+  margin: 20px 0;
   @media (max-width: 550px) {
     width: 300px;
   }
@@ -60,7 +58,6 @@ export const Error = styled.div`
   padding: 10px;
   margin-top: 20px;
   & span {
-    font-family: SF Pro Text;
     font-style: normal;
     font-weight: normal;
     font-size: 12px;
@@ -90,7 +87,6 @@ export const Error = styled.div`
 `;
 
 export const Label = styled.label<{error?: boolean}>`
-  font-family: SF Pro Text;
   font-style: normal;
   font-weight: normal;
   font-size: 16px;

@@ -4,7 +4,8 @@ import IndicatorIcon from './IndicatorIcon';
 import optionsIcon from '../../assets/icons/dots.svg';
 import SubMenu from './SubMenu';
 import {copyResponse} from '../../utils/copyResponse';
-import {deleteUserAction} from '../../utils/deleteUserAction';
+import {useAppDispatch} from '../../hooks/redux';
+import {removeAction} from '../../store/reducers/requestReducer';
 
 type TabPropsType = {
   id: string;
@@ -12,14 +13,20 @@ type TabPropsType = {
   title: string;
   responseText: any;
   requestText: any;
-  setViewText: (requestText: string, responseText: string) => void;
-  sendRequest: () => Promise<void>;
+  userName: string;
+  width: number;
+  margin: number;
+  setViewText: (requestText: string, responseText: string, id: number) => void;
+  sendRequest: (id?: string) => void;
 };
 
-const Tab = ({sendRequest, responseText, requestText, id, isError, title, setViewText}: TabPropsType) => {
+const Tab = ({margin, width, userName, sendRequest, responseText, requestText, id, isError, title, setViewText}: TabPropsType) => {
+  const dispatch = useAppDispatch();
   const [isVisibleSubMenu, setIsVisibleSubMenu] = React.useState(false);
   const [isVisibleToast, setIsVisibleToast] = React.useState(false);
   const [toastText, setToastText] = React.useState('Скопировано');
+
+  React.useEffect(() => {}, []);
 
   const viewToast = (text: string) => {
     setToastText(text);
@@ -30,7 +37,8 @@ const Tab = ({sendRequest, responseText, requestText, id, isError, title, setVie
     }, 3000);
   };
 
-  const viewSubMenu = () => {
+  const viewSubMenu = (e: React.MouseEvent<HTMLImageElement, MouseEvent>) => {
+    e.stopPropagation();
     setIsVisibleSubMenu(!isVisibleSubMenu);
   };
 
@@ -40,31 +48,33 @@ const Tab = ({sendRequest, responseText, requestText, id, isError, title, setVie
     }
   };
 
-  const deleteTab = () => {
-    deleteUserAction(id);
+  const deleteTab = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    e.stopPropagation();
+    dispatch(removeAction({id}));
     setIsVisibleSubMenu(false);
   };
 
   const perform = async () => {
     openTab();
-    await sendRequest();
+    await sendRequest(id);
     setIsVisibleSubMenu(false);
-    console.log('perform');
   };
 
   const openTab = () => {
-    setViewText(JSON.stringify(requestText), responseText);
+    setViewText(typeof requestText === 'string' ? requestText : JSON.stringify(requestText, null, 2), responseText, +id);
   };
 
   return (
     <TabBlock onClick={openTab} onMouseLeave={closeSubMenu}>
-      <TabWrapper>
+      <TabWrapper margin={margin} width={width}>
         <IndicatorIcon isError={isError} />
         {isVisibleToast && <Toast>{toastText}</Toast>}
-        <Title>{title || 'no action'}</Title>
-        <OptionsIcon src={optionsIcon} onClick={viewSubMenu} />
+        <Title>{title?.slice(0, 10) || 'no action'}</Title>
+        <OptionsIcon src={optionsIcon} onClick={(e) => viewSubMenu(e)} />
       </TabWrapper>
-      {isVisibleSubMenu && <SubMenu perform={perform} deleteTab={deleteTab} copy={() => copyResponse({id, viewToast})} />}
+      {isVisibleSubMenu && (
+        <SubMenu margin={margin} perform={perform} deleteTab={deleteTab} copy={(e) => copyResponse({e, id, viewToast, userName})} />
+      )}
     </TabBlock>
   );
 };
@@ -78,6 +88,8 @@ const TabBlock = styled.div`
 
 const OptionsIcon = styled.img`
   cursor: pointer;
+  height: 20px;
+  width: 4px;
 `;
 
 const Toast = styled.div`
@@ -86,7 +98,6 @@ const Toast = styled.div`
   height: 20px;
   background: #f6f6f6;
   border-radius: 5px;
-  font-family: SF Pro Text;
   font-style: normal;
   font-weight: normal;
   font-size: 12px;
@@ -109,24 +120,23 @@ const Toast = styled.div`
   }
 `;
 
-const TabWrapper = styled.div`
+const TabWrapper = styled.div<{width: number; margin: number}>`
   position: relative;
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
   padding: 5px 10px;
-  width: 120px;
+  width: ${(props) => props.width}px;
   height: 30px;
   background: #ffffff;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
   border-radius: 5px;
-  margin: 0 10px;
+  margin: 0 ${(props) => props.margin}px;
   overflow: hidden;
 `;
 
 const Title = styled.h2`
-  font-family: SF Pro Text;
   font-style: normal;
   font-weight: normal;
   font-size: 16px;

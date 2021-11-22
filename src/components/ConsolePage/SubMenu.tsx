@@ -2,14 +2,15 @@ import React from 'react';
 import styled from 'styled-components';
 
 type SubMenuPropsType = {
-  copy: () => void;
-  deleteTab: () => void;
+  copy: (e: React.MouseEvent<HTMLImageElement, MouseEvent>) => void;
+  deleteTab: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
   perform: () => void;
+  margin: number;
 };
 
-const SubMenu = ({copy, deleteTab, perform}: SubMenuPropsType) => {
+const SubMenu = ({margin, copy, deleteTab, perform}: SubMenuPropsType) => {
   return (
-    <SubMenuWrapper>
+    <SubMenuWrapper margin={margin}>
       <SubMenuOption normal onClick={perform}>
         Выполнить
       </SubMenuOption>
@@ -17,7 +18,7 @@ const SubMenu = ({copy, deleteTab, perform}: SubMenuPropsType) => {
         Скопировать
       </SubMenuOption>
       <SubMenuOptionHr />
-      <SubMenuOption onClick={deleteTab}>Удалить</SubMenuOption>
+      <SubMenuOption onClick={(e) => deleteTab(e)}>Удалить</SubMenuOption>
     </SubMenuWrapper>
   );
 };
@@ -40,13 +41,13 @@ const SubMenuOption = styled.div<{normal?: boolean}>`
   }
 `;
 
-const SubMenuWrapper = styled.div`
-  display: flex;
+const SubMenuWrapper = styled.div<{margin: number}>`
+  position: absolute;
+  right: ${(props) => props.margin}px;
   z-index: 2;
   flex-direction: column;
   padding: 5px 0;
   cursor: pointer;
-  position: absolute;
   width: 133px;
 
   background: #ffffff;

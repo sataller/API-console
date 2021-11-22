@@ -2,10 +2,12 @@ import React from 'react';
 import styled from 'styled-components';
 import CustomButton from '../reusibleComponents/CustomButton';
 import FormatButton from './FormatButton';
+import {Constants} from '../../constants';
+import LinkToGit from '../reusibleComponents/LinkToGit';
 
 type FooterPropsType = {
   formatJson: () => void;
-  sendRequest: () => void;
+  sendRequest: (id: string) => void;
   error: boolean;
   isFetching: boolean;
 };
@@ -13,9 +15,9 @@ type FooterPropsType = {
 const ConsoleFooter = ({formatJson, sendRequest, error, isFetching}: FooterPropsType) => {
   return (
     <Wrapper>
-      <CustomButton isFetching={isFetching} text={'Send'} isError={error} onSubmit={sendRequest} />
+      <CustomButton isFetching={isFetching} text={Constants.Send} isError={error} onSubmit={() => sendRequest(``)} />
       <LinkToGit>@link-to-your-github</LinkToGit>
-      <FormatButton onClick={formatJson} />
+      <FormatButton title={Constants.Format} onClick={formatJson} />
     </Wrapper>
   );
 };
@@ -32,26 +34,4 @@ const Wrapper = styled.div`
   margin: 0;
   padding: 15px;
   border-top: 1px solid rgba(0, 0, 0, 0.2);
-`;
-
-const LinkToGit = styled.div`
-  font-family: SF Pro Text;
-  font-style: normal;
-  font-weight: normal;
-  font-size: 16px;
-  line-height: 20px;
-
-  display: flex;
-  align-items: center;
-
-  color: #999999;
-
-  &:hover {
-    color: orange;
-    cursor: pointer;
-  }
-
-  &:focus {
-    color: orange;
-  }
 `;

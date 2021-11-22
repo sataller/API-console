@@ -1,13 +1,17 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {Form, Title, Wrapper} from './LoginStyles';
 import {useFormik} from 'formik';
 import ErrorBlock from './ErrorBlock';
 import CustomInput from './CustomInput';
 import CustomButton from '../reusibleComponents/CustomButton';
 import Logo from '../reusibleComponents/Logo';
-import {logIn, LoginPayloadType, Status} from '../../api/api';
-import {validateLogin, validatePassword} from '../../utils/validation';
-import {useHistory} from 'react-router-dom';
+import {LoginPayloadType} from '../../api/api';
+import * as validation from '../../utils/validation';
+import {asyncLoginAction} from '../../store/sags/asyncActions';
+import {useAppDispatch, useAppSelector} from '../../hooks/redux';
+import {setError} from '../../store/reducers/authReducer';
+import {Constants} from '../../constants';
+import LinkToGit from '../reusibleComponents/LinkToGit';
 
 export type FormikValuesType = {
   login: string;
@@ -21,24 +25,27 @@ type FormikErrorType = {
 };
 
 const Login = () => {
-  const [isFetching, setIsFetching] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
+  const {error, errorText, isFetching} = useAppSelector((state) => state.auth);
+  const dispatch = useAppDispatch();
   const [validationError, setValidationErrors] = React.useState<{login: boolean; password: boolean}>({
     login: false,
     password: false,
   });
-  const history = useHistory();
   const form = useFormik<FormikValuesType>({
     initialValues: {
       login: '',
       sublogin: '',
       password: '',
     },
+    initialTouched: {
+      login: false,
+      password: false,
+    },
+    validateOnChange: false,
     validate: (values) => {
       const errors: FormikErrorType = {};
-      const loginError = validateLogin(values.login);
-      const passwordError = validatePassword(values.password);
-
+      const loginError = validation.validateLogin(values.login);
+      const passwordError = validation.validatePassword(values.password);
       if (loginError !== '') {
         errors.login = loginError;
       }
@@ -52,6 +59,7 @@ const Login = () => {
       });
       return errors;
     },
+
     onSubmit: (values) => {
       const payload = getPayload(values);
       onSubmit({...payload});
@@ -59,7 +67,7 @@ const Login = () => {
     },
   });
 
-  const getPayload = (values: any) => {
+  const getPayload = (values: {[key: string]: string}) => {
     const payload: {[key: string]: string} = {};
     for (let key in values) {
       if (values[key] !== '') {
@@ -70,58 +78,54 @@ const Login = () => {
   };
 
   const onSubmit = async (payload: LoginPayloadType) => {
-    setError(null);
-    setIsFetching(true);
-    const response = await logIn(payload);
-
-    if (response.status === Status.ERROR) {
-      setError(`{id: ${response?.data?.id}, explain: ${response?.data?.explain}`);
-    } else {
-      history.push(`/console`);
-    }
-
-    setIsFetching(false);
+    dispatch(setError({error: false}));
+    dispatch(asyncLoginAction(payload));
   };
   return (
     <Wrapper>
       <Logo />
       <Form onSubmit={form.handleSubmit}>
         <Title>API-консолька</Title>
-        {error && <ErrorBlock errorText={error} />}
+        {error && <ErrorBlock errorText={errorText} />}
         <CustomInput
           key={'login'}
+          touched={form.touched.login}
+          onBlur={form.handleBlur}
           error={form.errors.login}
           id={'login'}
           onChange={form.handleChange}
           value={form.values.login}
-          placeholder="Login"
+          placeholder="Логин"
           type={'text'}
         />
         <CustomInput
           key={'sublogin'}
           id={'sublogin'}
-          placeholder="Sublogin"
+          placeholder="Саблогин"
           onChange={form.handleChange}
           value={form.values.sublogin}
           type={'text'}
         />
         <CustomInput
           key={'password'}
+          touched={form.touched.password}
           error={form.errors.password}
+          onBlur={form.handleBlur}
           id={'password'}
-          placeholder="Password"
+          placeholder="Пароль"
           onChange={form.handleChange}
           value={form.values.password}
           type={'password'}
         />
         <CustomButton
-          isError={validationError.login || validationError.password}
+          isError={(validationError.login && form.touched.login) || (validationError.password && form.touched.password)}
           margin={20}
           onSubmit={form.handleSubmit}
           isFetching={isFetching}
-          text={'Send'}
+          text={Constants.Login}
         />
       </Form>
+      <LinkToGit>@link-to-your-github</LinkToGit>
     </Wrapper>
   );
 };

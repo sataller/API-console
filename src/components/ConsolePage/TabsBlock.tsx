@@ -2,25 +2,21 @@ import React from 'react';
 import styled from 'styled-components';
 import CloseButton from './CloseButton';
 import Tabs from './Tabs';
+import {useAppSelector} from '../../hooks/redux';
 
 type TabsBlockType = {
-  setViewText: (requestText: string, responseText: string) => void;
-  sendRequest: () => Promise<void>;
+  setViewText: (requestText: string, responseText: string, id: number) => void;
+  sendRequest: () => void;
+  removeAllTubs: () => void;
 };
 
-const TabsBlock = ({sendRequest, setViewText}: TabsBlockType) => {
-  const [userRequests, setUserRequests] = React.useState();
-  React.useEffect(() => {
-    const data = localStorage.getItem('userActions');
-    if (data) {
-      setUserRequests(JSON.parse(data));
-    }
-  }, []);
+const TabsBlock = ({removeAllTubs, sendRequest, setViewText}: TabsBlockType) => {
+  const {data, userName} = useAppSelector((state) => state.request);
 
   return (
     <Wrapper>
-      <Tabs sendRequest={sendRequest} setViewText={setViewText} data={userRequests} />
-      <CloseButton />
+      <Tabs userName={userName} sendRequest={sendRequest} setViewText={setViewText} data={data} />
+      <CloseButton onClick={removeAllTubs} />
     </Wrapper>
   );
 };

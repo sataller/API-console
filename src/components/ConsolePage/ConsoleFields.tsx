@@ -3,7 +3,8 @@ import styled from 'styled-components';
 import dotsIcon from '../../assets/icons/dots.svg';
 import RequestField from './RequestField';
 import ResponseField from './ResponseField';
-import {useResize} from '../../utils/useResize';
+import {useResize} from '../../hooks/useResize';
+import {Constants} from '../../constants';
 
 const ConsoleFields = ({
   fieldHeight,
@@ -12,6 +13,7 @@ const ConsoleFields = ({
   requestError,
   responseError,
   responseText,
+                         onBlurHandler
 }: {
   fieldHeight: number;
   requestText: string;
@@ -19,24 +21,24 @@ const ConsoleFields = ({
   requestError: boolean;
   responseError: boolean;
   onChangeValue: (text: string) => void;
+  onBlurHandler: (text: string) => void;
 }) => {
   const {resizeDots, rightField, leftField} = useResize();
 
   const onChangeText = (e: ChangeEvent<HTMLTextAreaElement>) => {
     onChangeValue(e.target.value);
   };
-
   return (
     <Wrapper height={fieldHeight}>
-      <FieldWrapper ref={leftField}>
-        <Title error={requestError}>Request:</Title>
-        <RequestField value={requestText} onchange={onChangeText} error={requestError} />
+      <FieldWrapper maxHeight={fieldHeight * 0.95} ref={leftField}>
+        <Title error={requestError}>{Constants.Request}:</Title>
+        <RequestField onBlurHandler={onBlurHandler} value={requestText} onchange={onChangeText} error={requestError} />
       </FieldWrapper>
       <div style={{display: 'flex'}} ref={resizeDots}>
         <ResizeIcon src={dotsIcon} />
       </div>
-      <FieldWrapper ref={rightField}>
-        <Title error={responseError}>Response:</Title>
+      <FieldWrapper maxHeight={fieldHeight * 0.95} ref={rightField}>
+        <Title error={responseError}>{Constants.Response}:</Title>
         <ResponseField json={responseText} error={responseError} />
       </FieldWrapper>
     </Wrapper>
@@ -45,16 +47,16 @@ const ConsoleFields = ({
 
 export default ConsoleFields;
 
-const FieldWrapper = styled.div`
+const FieldWrapper = styled.div<{maxHeight?: number}>`
   flex-grow: 0.5;
   min-width: 400px;
+  max-height: ${(props) => props.maxHeight}px;
   align-items: stretch;
 `;
 
 const Title = styled.h3<{error: boolean}>`
   height: 17px;
 
-  font-family: SF Pro Text;
   font-style: normal;
   font-weight: normal;
   font-size: 12px;
@@ -72,7 +74,7 @@ const Wrapper = styled.div<{height: number}>`
   width: 100%;
 
   min-height: ${(props) => props.height}px;
-  padding: 0 15px 15px 15px;
+  padding: 0 15px;
 `;
 
 const ResizeIcon = styled.img`

@@ -5,20 +5,24 @@ import {FullScreen, useFullScreenHandle} from 'react-full-screen';
 import TabsBlock from './TabsBlock';
 import ConsoleFooter from './ConsoleFooter';
 import ConsoleFields from './ConsoleFields';
-import * as api from '../../api/api';
+import {asyncRequestAction, asyncUpdateRequestAction} from '../../store/sags/asyncActions';
+import {useAppDispatch, useAppSelector} from '../../hooks/redux';
+import * as requestAction from '../../store/reducers/requestReducer';
 import {Status} from '../../api/api';
-
-const json = `{"array": [1,2,3],"boolean":true,"null": null,"number":"four","object":{"a":"b","c": "d"},"string":"HelloWorld"}`;
+import {removeAllRequests, setActiveTub} from '../../store/reducers/requestReducer';
+import * as validation from '../../utils/validation';
 
 const Console = () => {
+  const {newRequestText, data, isFetching, activeTab} = useAppSelector((state) => state.request);
+  const {user} = useAppSelector((state) => state.auth);
+  const dispatch = useAppDispatch();
   const fullScreeRef = React.useRef<HTMLDivElement>(null);
   const [isFullScreen, setIsFullScreen] = React.useState<boolean>(false);
   const [screenHeight, setScreenHeight] = React.useState(0);
-  const [requestError, setRequestError] = React.useState<boolean>(false);
   const [responseError, setResponseError] = React.useState<boolean>(false);
-  const [requestText, setRequestText] = React.useState<string>(json);
+  const [requestError, setRequestError] = React.useState<boolean>(false);
+  const [requestText, setRequestText] = React.useState<string>(newRequestText);
   const [responseText, setResponseText] = React.useState<string>('');
-  const [isFetching, setIsFetching] = React.useState<boolean>(false);
   const handle = useFullScreenHandle();
 
   const switchFullScreen = () => {
@@ -32,6 +36,10 @@ const Console = () => {
   };
 
   React.useEffect(() => {
+    dispatch(requestAction.initActions({userName: user.login}));
+  }, [dispatch, user]);
+
+  React.useEffect(() => {
     if (handle.active) {
       setScreenHeight(window.screen.height);
     } else {
@@ -39,56 +47,108 @@ const Console = () => {
     }
   }, [handle.active]);
 
+  React.useEffect(() => {
+    setRequestText(typeof newRequestText === 'string' ? newRequestText : JSON.stringify(newRequestText, null, 2));
+    if (!activeTab && activeTab !== 0) return;
+
+    const key = data?.dataList?.hasOwnProperty(activeTab) ? activeTab : '0';
+    const status = data?.dataList[key]?.status === Status.ERROR;
+    const requestStatus = data?.dataList[key]?.requestStatus === Status.ERROR;
+    setResponseError(status);
+    setRequestError(requestStatus);
+    setResponseText(data?.dataList[key]?.response);
+    setRequestText(newRequestText || data?.dataList[key]?.request);
+  }, [newRequestText, responseError, data?.dataList, activeTab, data]);
+
   const formatJson = () => {
     try {
-      const string = JSON.parse(requestText.replace(/\s+/g, ''));
+      const string = formatString(requestText);
       setRequestText(JSON.stringify(string, null, 2));
+      setRequestError(false);
+      dispatch(requestAction.setRequestError({activeId: `${activeTab}`, isError: Status.OK}));
+      dispatch(requestAction.setRequestText({activeId: `${activeTab}`, text: JSON.stringify(string, null, 2)}));
     } catch (error) {
-      setRequestError(true);
+      dispatch(requestAction.setRequestError({activeId: `${activeTab}`, isError: Status.ERROR}));
     }
   };
 
-  const validateJson = () => {
+  const formatString = (text: string) => {
+    const newString = replaceString(text);
+    return JSON.parse(newString);
+  };
+
+  const replaceString = (text: string) => {
+    return text.replace(/\s+/g, ' ');
+  };
+  const validateJson = (text?: string) => {
     try {
-      JSON.parse(requestText.replace(/\s+/g, ''));
-      return true;
+      const formatText = formatString(text || requestText);
+      return {isError: false, formatText};
     } catch (error) {
-      return false;
+      return {isError: true, formatText: requestText || text || ''};
     }
   };
 
-  const sendRequest = async () => {
+  const sendRequest = (id?: string) => {
     setResponseError(false);
     const isValid = validateJson();
-    if (!isValid) {
-      setRequestError(true);
+    const activeId = id || `${activeTab}`;
+    if (isValid.isError || requestError) {
+      dispatch(requestAction.setRequestText({activeId, text: requestText}));
+      dispatch(requestAction.setRequestError({activeId, isError: Status.ERROR}));
       return;
     }
-    setIsFetching(true);
-    const response = await api.request(JSON.parse(requestText));
-    if (response.status === Status.ERROR) {
-      setResponseError(true);
-    }
-    setResponseText(response.data);
-    setIsFetching(false);
+    id
+      ? dispatch(
+          asyncUpdateRequestAction({
+            data: data?.dataList[activeId]?.request,
+            id: activeId,
+          })
+        )
+      : dispatch(asyncRequestAction(isValid.formatText));
   };
 
   const onChangeRequestText = (text: string) => {
-    setRequestError(false);
     setRequestText(text);
   };
 
-  const setViewText = (requestText: string, responseText: string) => {
+  const removeAllTubs = () => {
+    dispatch(removeAllRequests());
+    setRequestText('');
+    setRequestError(false);
+    setResponseError(false);
+    setResponseText('');
+  };
+
+  const setViewText = (requestText: string, responseText: string, id: number) => {
+    dispatch(setActiveTub(id));
+    setRequestError(false);
     setRequestText(requestText);
     setResponseText(responseText);
+    dispatch(requestAction.setRequestText({text: requestText}));
+  };
+
+  const onBlurHandler = (requestText: string) => {
+    setRequestText(requestText);
+    dispatch(requestAction.setRequestText({text: requestText}));
+    dispatch(requestAction.setActiveTub(null));
+    const isValid = validation.validateJson(requestText);
+    setRequestError(false);
+    if (!isValid) {
+      setRequestError(true);
+      dispatch(requestAction.setRequestError({activeId: `${activeTab}`, isError: Status.ERROR}));
+    } else {
+      dispatch(requestAction.setRequestError({activeId: `${activeTab}`, isError: Status.OK}));
+    }
   };
 
   return (
     <FullScreen handle={handle}>
       <Wrapper height={screenHeight} ref={fullScreeRef}>
         <ConsoleHeader setIsFullScreen={switchFullScreen} isFullScreen={isFullScreen} />
-        <TabsBlock setViewText={setViewText} sendRequest={sendRequest} />
+        <TabsBlock removeAllTubs={removeAllTubs} setViewText={setViewText} sendRequest={sendRequest} />
         <ConsoleFields
+          onBlurHandler={onBlurHandler}
           requestError={requestError}
           responseError={responseError}
           requestText={requestText}

@@ -1,7 +1,8 @@
 import React from 'react';
 import Tab from './Tab';
 import styled from 'styled-components';
-import {Status} from '../../api/api';
+import {Status, StatusType} from '../../api/api';
+import {useScroll} from '../../hooks/useScroll';
 
 export type TabsPropsType = {
   data?: {
@@ -9,65 +10,52 @@ export type TabsPropsType = {
       [key: string]: {
         response: any;
         request: any;
-        status: string;
+        status: StatusType;
       };
     };
     maxLength: number;
   };
-  setViewText: (requestText: string, responseText: string) => void;
-  sendRequest: () => Promise<void>;
+  setViewText: (requestText: string, responseText: string, id: number) => void;
+  sendRequest: () => void;
+  userName: string;
 };
 
 const tabWidth = 140;
+const tabMargin = 10;
 const closeButtonWidth = 50;
 
-const Tabs = ({sendRequest, data, setViewText}: TabsPropsType) => {
-  const scrollRef = React.useRef<HTMLDivElement>(null);
-
+const Tabs = ({userName, sendRequest, data, setViewText}: TabsPropsType) => {
+  const {scrollRef} = useScroll({data, tabWidth, tabMargin, closeButtonWidth});
   let tubsListE: JSX.Element[] = [];
+
+  const convertRequest = (key: string) => {
+    try {
+      return typeof data?.dataList[key]?.request === 'string' ? JSON.parse(data?.dataList[key]?.request) : data?.dataList[key]?.request;
+    } catch (error) {
+      return data?.dataList[key]?.request;
+    }
+  };
+
   for (let key in data?.dataList) {
+    const request = convertRequest(key);
+
     tubsListE = [
       ...tubsListE,
       <Tab
+        width={tabWidth}
+        margin={tabMargin}
         sendRequest={sendRequest}
-        requestText={data?.dataList[key].request}
-        responseText={data?.dataList[key].response}
+        requestText={data?.dataList[key]?.request}
+        responseText={data?.dataList[key]?.response}
         setViewText={setViewText}
         id={key}
-        title={data?.dataList[key].request.action}
-        isError={data?.dataList[key].status === Status.ERROR}
+        title={request.action}
+        isError={data?.dataList[key]?.status === Status.ERROR}
         key={key}
+        userName={userName}
       />,
     ];
   }
-
-  React.useEffect(() => {
-    const element = scrollRef.current;
-    if (element && data) {
-      const length = Object.entries(data?.dataList).length;
-      let elementPosition = 0;
-      element.addEventListener('wheel', (e) => {
-        e.preventDefault();
-        let visibleWidth = scrollRef?.current?.parentElement?.offsetWidth || 1;
-        let tabsWidth = tabWidth * length - visibleWidth + closeButtonWidth;
-
-        elementPosition = elementPosition + e.deltaY;
-
-        if (tabWidth * length < visibleWidth + closeButtonWidth) {
-          return;
-        }
-        if (elementPosition <= 1 && -tabsWidth <= elementPosition) {
-          element.style.transform = `translateX(${elementPosition}px)`;
-        } else if (-tabsWidth > elementPosition) {
-          elementPosition = -tabsWidth;
-          element.style.transform = `translateX(${elementPosition}px)`;
-        } else {
-          elementPosition = 0;
-          element.style.transform = `translateX(${elementPosition}px)`;
-        }
-      });
-    }
-  }, [data]);
 
   return <TabsWrapper ref={scrollRef}>{tubsListE}</TabsWrapper>;
 };

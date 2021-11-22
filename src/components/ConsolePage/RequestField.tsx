@@ -6,13 +6,15 @@ type RequestFieldPropsType = {
   error?: boolean;
   onchange: (e: ChangeEvent<HTMLTextAreaElement>) => void;
   value: string;
+  onBlurHandler: (text: string) => void;
 };
 
-const RequestField = ({children, error, onchange, value}: RequestFieldPropsType) => {
-  const fieldRef = React.useRef<HTMLTextAreaElement>(null);
-
+const RequestField = ({onBlurHandler, children, error, onchange, value}: RequestFieldPropsType) => {
+  const onBlur = (e: React.FocusEvent<HTMLTextAreaElement, Element>) => {
+    onBlurHandler(e.target.value);
+  };
   return (
-    <Wrapper onChange={(e) => onchange(e)} ref={fieldRef} error={error} value={value}>
+    <Wrapper onBlur={(e) => onBlur(e)} onChange={(e) => onchange(e)} error={error} value={value}>
       {children}
     </Wrapper>
   );
