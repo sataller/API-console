@@ -44,6 +44,7 @@ const ActionsTable = ({data}: ActionsTableType) => {
     columns,
     data: tableData,
   });
+  console.log(tableData);
   return (
     <TableWrapper>
       <table {...getTableProps()}>
