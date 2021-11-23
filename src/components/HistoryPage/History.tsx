@@ -1,10 +1,18 @@
 import React from 'react';
 import ActionsTable from './ActionsTable';
+import {DataListType} from '../../store/reducers/requestReducer';
 
-const History = () => {
+type HistoryType = {
+  data: {
+    dataList: DataListType;
+    maxLength: number;
+  };
+};
+
+const History = ({data}: HistoryType) => {
   return (
     <div>
-      <ActionsTable />
+      <ActionsTable data={data} />
     </div>
   );
 };

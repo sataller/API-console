@@ -2,29 +2,31 @@ import React from 'react';
 import styled from 'styled-components';
 import {useTable} from 'react-table';
 import {Status} from '../../api/api';
+import {DataListType} from '../../store/reducers/requestReducer';
 
-const ActionsTable = () => {
-  const [data, setData] = React.useState<any>([{name: 'Loading', status: Status.ERROR}]);
+type ActionsTableType = {
+  data: {
+    dataList: DataListType;
+    maxLength: number;
+  };
+};
+
+const ActionsTable = ({data}: ActionsTableType) => {
+  const [tableData, setTableData] = React.useState<any>([{name: 'Loading', status: Status.ERROR}]);
   React.useEffect(() => {
-    const user = localStorage.getItem('user');
-    if (!user) return;
-    const data = localStorage.getItem(`${JSON.parse(user).login}_Actions`);
-    if (!data) return;
-    const newData = JSON.parse(data).data.dataList;
     let items: any = [];
-    for (let key in newData) {
+    for (let key in data.dataList) {
       items = [
         ...items,
         {
-          status: newData[key].status,
-          name: typeof newData[key].request === 'object' ? JSON.stringify(newData[key].request) : newData[key].request,
+          status: data.dataList[key].status,
+          name: typeof data.dataList[key].request === 'object' ? JSON.stringify(data.dataList[key].request) : data.dataList[key].request,
         },
       ];
     }
-    console.log(items);
-    setData(items);
-  }, []);
-  console.log(data);
+    setTableData(items);
+  }, [data.dataList]);
+
   const columns = React.useMemo(
     () => [
       {
@@ -40,12 +42,11 @@ const ActionsTable = () => {
   );
   const {getTableProps, getTableBodyProps, headerGroups, rows, prepareRow} = useTable({
     columns,
-    data,
+    data: tableData,
   });
-
   return (
     <TableWrapper>
-      <table>
+      <table {...getTableProps()}>
         <thead>
           {headerGroups.map((headerGroup) => (
             <tr {...headerGroup.getHeaderGroupProps()}>
@@ -55,7 +56,7 @@ const ActionsTable = () => {
             </tr>
           ))}
         </thead>
-        <tbody>
+        <tbody {...getTableBodyProps()}>
           {rows.map((row, i) => {
             prepareRow(row);
             return (

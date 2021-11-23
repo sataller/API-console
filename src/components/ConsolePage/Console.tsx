@@ -3,15 +3,24 @@ import TabsBlock from './TabsBlock';
 import ConsoleFooter from './ConsoleFooter';
 import ConsoleFields from './ConsoleFields';
 import {asyncRequestAction, asyncUpdateRequestAction} from '../../store/sags/asyncActions';
-import {useAppDispatch, useAppSelector} from '../../hooks/redux';
+import {useAppDispatch} from '../../hooks/redux';
 import * as requestAction from '../../store/reducers/requestReducer';
 import {Status} from '../../api/api';
-import {removeAllRequests, setActiveTub} from '../../store/reducers/requestReducer';
+import {DataListType, removeAllRequests, setActiveTub} from '../../store/reducers/requestReducer';
 import * as validation from '../../utils/validation';
 
-const Console = ({screenHeight}: {screenHeight: number}) => {
-  const {newRequestText, data, isFetching, activeTab} = useAppSelector((state) => state.request);
-  const {user} = useAppSelector((state) => state.auth);
+type ConsoleType = {
+  screenHeight: number;
+  newRequestText: string;
+  data: {
+    dataList: DataListType;
+    maxLength: number;
+  };
+  isFetching: boolean;
+  activeTab: number | null;
+};
+
+const Console = ({screenHeight, newRequestText, data, isFetching, activeTab}: ConsoleType) => {
   const dispatch = useAppDispatch();
   const [responseError, setResponseError] = React.useState<boolean>(false);
   const [requestError, setRequestError] = React.useState<boolean>(false);
@@ -19,11 +28,8 @@ const Console = ({screenHeight}: {screenHeight: number}) => {
   const [responseText, setResponseText] = React.useState<string>('');
 
   React.useEffect(() => {
-    dispatch(requestAction.initActions({userName: user.login}));
-  }, [dispatch, user]);
-
-  React.useEffect(() => {
-    setRequestText(typeof newRequestText === 'string' ? newRequestText : JSON.stringify(newRequestText, null, 2));
+    // setRequestText(typeof newRequestText === 'string' ? newRequestText : JSON.stringify(newRequestText, null, 2));
+    setRequestText(newRequestText);
     if (!activeTab && activeTab !== 0) return;
 
     const key = data?.dataList?.hasOwnProperty(activeTab) ? activeTab : '0';
@@ -116,7 +122,6 @@ const Console = ({screenHeight}: {screenHeight: number}) => {
       dispatch(requestAction.setRequestError({activeId: `${activeTab}`, isError: Status.OK}));
     }
   };
-
   return (
     <>
       <TabsBlock removeAllTubs={removeAllTubs} setViewText={setViewText} sendRequest={sendRequest} />

@@ -5,6 +5,8 @@ import History from '../HistoryPage/History';
 import styled from 'styled-components';
 import {FullScreen, useFullScreenHandle} from 'react-full-screen';
 import Header from '../Header/Header';
+import {useAppDispatch, useAppSelector} from '../../hooks/redux';
+import * as requestAction from '../../store/reducers/requestReducer';
 
 export enum PathName {
   console = '/console',
@@ -12,12 +14,20 @@ export enum PathName {
 }
 
 const MainPageWrapper = () => {
+  const {newRequestText, data, isFetching, activeTab} = useAppSelector((state) => state.request);
+  const {user} = useAppSelector((state) => state.auth);
+  const dispatch = useAppDispatch();
+
   const [isFullScreen, setIsFullScreen] = React.useState<boolean>(false);
   const [screenHeight, setScreenHeight] = React.useState(0);
   const fullScreeRef = React.useRef<HTMLDivElement>(null);
 
   const history = useHistory();
   const handle = useFullScreenHandle();
+
+  React.useEffect(() => {
+    dispatch(requestAction.initActions({userName: user.login}));
+  }, [dispatch, user]);
 
   React.useEffect(() => {
     if (handle.active) {
@@ -36,12 +46,15 @@ const MainPageWrapper = () => {
       setIsFullScreen(true);
     }
   };
-
   return (
     <FullScreen handle={handle}>
       <Wrapper height={screenHeight} ref={fullScreeRef}>
         <Header setIsFullScreen={switchFullScreen} isFullScreen={isFullScreen} />
-        {history.location.pathname === PathName.console ? <Console screenHeight={screenHeight} /> : <History />}
+        {history.location.pathname === PathName.console ? (
+          <Console screenHeight={screenHeight} newRequestText={newRequestText} data={data} isFetching={isFetching} activeTab={activeTab} />
+        ) : (
+          <History data={data} />
+        )}
       </Wrapper>
     </FullScreen>
   );

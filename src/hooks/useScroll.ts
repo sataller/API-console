@@ -21,7 +21,7 @@ export const useScroll = ({
       element.addEventListener(
         'wheel',
         (e) => {
-          e.preventDefault();
+          // e.preventDefault();
           let visibleWidth = scrollRef?.current?.parentElement?.offsetWidth || 1;
           let tabsWidth = (tabWidth + tabMargin * 2) * length - visibleWidth + closeButtonWidth;
 
