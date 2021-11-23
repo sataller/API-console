@@ -9,4 +9,6 @@ export enum Constants {
   Optional = 'Опционально',
   Request = 'Запрос',
   Response = 'Ответ',
+  History = 'История',
+  GoBack = 'Вернуться',
 }

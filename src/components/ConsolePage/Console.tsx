@@ -1,54 +1,35 @@
 import React from 'react';
-import styled from 'styled-components';
-import ConsoleHeader from './ConsoleHeader';
-import {FullScreen, useFullScreenHandle} from 'react-full-screen';
 import TabsBlock from './TabsBlock';
 import ConsoleFooter from './ConsoleFooter';
 import ConsoleFields from './ConsoleFields';
 import {asyncRequestAction, asyncUpdateRequestAction} from '../../store/sags/asyncActions';
-import {useAppDispatch, useAppSelector} from '../../hooks/redux';
+import {useAppDispatch} from '../../hooks/redux';
 import * as requestAction from '../../store/reducers/requestReducer';
 import {Status} from '../../api/api';
-import {removeAllRequests, setActiveTub} from '../../store/reducers/requestReducer';
+import {DataListType, removeAllRequests, setActiveTub} from '../../store/reducers/requestReducer';
 import * as validation from '../../utils/validation';
 
-const Console = () => {
-  const {newRequestText, data, isFetching, activeTab} = useAppSelector((state) => state.request);
-  const {user} = useAppSelector((state) => state.auth);
+type ConsoleType = {
+  screenHeight: number;
+  newRequestText: string;
+  data: {
+    dataList: DataListType;
+    maxLength: number;
+  };
+  isFetching: boolean;
+  activeTab: number | null;
+};
+
+const Console = ({screenHeight, newRequestText, data, isFetching, activeTab}: ConsoleType) => {
   const dispatch = useAppDispatch();
-  const fullScreeRef = React.useRef<HTMLDivElement>(null);
-  const [isFullScreen, setIsFullScreen] = React.useState<boolean>(false);
-  const [screenHeight, setScreenHeight] = React.useState(0);
   const [responseError, setResponseError] = React.useState<boolean>(false);
   const [requestError, setRequestError] = React.useState<boolean>(false);
   const [requestText, setRequestText] = React.useState<string>(newRequestText);
   const [responseText, setResponseText] = React.useState<string>('');
-  const handle = useFullScreenHandle();
-
-  const switchFullScreen = () => {
-    if (handle.active) {
-      handle.exit();
-      setIsFullScreen(false);
-    } else {
-      handle.enter();
-      setIsFullScreen(true);
-    }
-  };
 
   React.useEffect(() => {
-    dispatch(requestAction.initActions({userName: user.login}));
-  }, [dispatch, user]);
-
-  React.useEffect(() => {
-    if (handle.active) {
-      setScreenHeight(window.screen.height);
-    } else {
-      setScreenHeight(window.innerHeight);
-    }
-  }, [handle.active]);
-
-  React.useEffect(() => {
-    setRequestText(typeof newRequestText === 'string' ? newRequestText : JSON.stringify(newRequestText, null, 2));
+    // setRequestText(typeof newRequestText === 'string' ? newRequestText : JSON.stringify(newRequestText, null, 2));
+    setRequestText(newRequestText);
     if (!activeTab && activeTab !== 0) return;
 
     const key = data?.dataList?.hasOwnProperty(activeTab) ? activeTab : '0';
@@ -141,34 +122,21 @@ const Console = () => {
       dispatch(requestAction.setRequestError({activeId: `${activeTab}`, isError: Status.OK}));
     }
   };
-
   return (
-    <FullScreen handle={handle}>
-      <Wrapper height={screenHeight} ref={fullScreeRef}>
-        <ConsoleHeader setIsFullScreen={switchFullScreen} isFullScreen={isFullScreen} />
-        <TabsBlock removeAllTubs={removeAllTubs} setViewText={setViewText} sendRequest={sendRequest} />
-        <ConsoleFields
-          onBlurHandler={onBlurHandler}
-          requestError={requestError}
-          responseError={responseError}
-          requestText={requestText}
-          responseText={responseText}
-          onChangeValue={onChangeRequestText}
-          fieldHeight={screenHeight - 170}
-        />
-        <ConsoleFooter isFetching={isFetching} error={requestError} sendRequest={sendRequest} formatJson={formatJson} />
-      </Wrapper>
-    </FullScreen>
+    <>
+      <TabsBlock removeAllTubs={removeAllTubs} setViewText={setViewText} sendRequest={sendRequest} />
+      <ConsoleFields
+        onBlurHandler={onBlurHandler}
+        requestError={requestError}
+        responseError={responseError}
+        requestText={requestText}
+        responseText={responseText}
+        onChangeValue={onChangeRequestText}
+        fieldHeight={screenHeight - 170}
+      />
+      <ConsoleFooter isFetching={isFetching} error={requestError} sendRequest={sendRequest} formatJson={formatJson} />
+    </>
   );
 };
 
 export default Console;
-
-const Wrapper = styled.div<{height: number}>`
-  max-width: 100%;
-  min-height: ${(props) => props.height}px;
-  background: #ffffff;
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-`;

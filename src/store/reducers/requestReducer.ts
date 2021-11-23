@@ -14,7 +14,7 @@ type StateType = {
   newRequestText: string;
 };
 
-type DataListType = {
+export type DataListType = {
   [key: string]: DataItemType;
 };
 
