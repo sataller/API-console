@@ -13,17 +13,10 @@ type HistoryType = {
 };
 
 const History = ({data}: HistoryType) => {
-  const dataList: any = {};
-
-  React.useEffect(() => {}, [dataList]);
-  for (let key in data.dataList) {
-    dataList[key] = data.dataList[key];
-    dataList[`${20 + +key}`] = data.dataList[key];
-  }
   return (
     <Wrapper>
       <TableWrapper>
-        <ActionsTable data={dataList} />
+        <ActionsTable data={data} />
       </TableWrapper>
       <div>
         <ChartWrapper>
