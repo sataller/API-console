@@ -13,10 +13,17 @@ type HistoryType = {
 };
 
 const History = ({data}: HistoryType) => {
+  const dataList: any = {};
+
+  React.useEffect(() => {}, [dataList]);
+  for (let key in data.dataList) {
+    dataList[key] = data.dataList[key];
+    dataList[`${20 + +key}`] = data.dataList[key];
+  }
   return (
     <Wrapper>
       <TableWrapper>
-        <ActionsTable data={data} />
+        <ActionsTable data={dataList} />
       </TableWrapper>
       <div>
         <ChartWrapper>
@@ -35,9 +42,9 @@ export default History;
 const Wrapper = styled.div``;
 
 const ChartWrapper = styled.div`
-  margin: 10px;
+  margin: 20px;
 `;
 
 const TableWrapper = styled.div`
-  margin: 10px;
+  margin: 20px;
 `;
