@@ -20,5 +20,6 @@ sagaMiddleware.run(rootWatcher);
 
 export type AppDispatch = typeof store.dispatch;
 export type AppState = ReturnType<typeof rootReducer>;
+export type StoreType = ReturnType<typeof configureStore>;
 
 export default store;

@@ -22,6 +22,7 @@ const App = () => {
     let userToken = localStorage.getItem('token');
 
     if (!userLocal && !userToken) return;
+
     sendsay.session = sendsay.session || userToken;
     dispatch(asyncIsAuthAction());
   }, [isAuth, dispatch]);
